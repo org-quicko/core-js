@@ -1,4 +1,4 @@
-import { IllegalArgumentException, NullPointerException } from '../exceptions';
+import { IllegalArgumentException, NullPointerException } from '../exceptions/index.js';
 
 export type JSONValue =
     | string

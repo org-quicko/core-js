@@ -1,6 +1,6 @@
 import { TZDate } from '@date-fns/tz';
 import { add, compareAsc, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarYears, Duration, endOfDay, format, isLeapYear, isValid, parse, startOfDay } from 'date-fns';
-import { IllegalArgumentException } from '../../exceptions';
+import { IllegalArgumentException } from '../../exceptions/IllegalArgumentException.js';
 
 /**
  * Utility class for date and time operations. Provides methods for parsing,

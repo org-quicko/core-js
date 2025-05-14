@@ -1,3 +1,3 @@
-export * from './ConsoleLoggerProvider'
-export * from './LoggerFactory'
-export * from './LoggerProvider'
+export * from './ConsoleLoggerProvider.js'
+export * from './LoggerFactory.js'
+export * from './LoggerProvider.js'
