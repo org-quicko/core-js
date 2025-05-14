@@ -1,4 +1,4 @@
-# core-js
+# core
 Foundational Node.js library built with TypeScript used across Quicko
 
 ## 📦 Installation
