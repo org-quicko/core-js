@@ -1,4 +1,4 @@
-import { BaseException } from './BaseException';
+import { BaseException } from './BaseException.js';
 
 /**
  * Base class for HTTP-related exceptions.

@@ -1,4 +1,4 @@
-import { BaseException } from "./BaseException";
+import { BaseException } from "./BaseException.js";
 
 /**
  * Exception thrown when an operation is attempted on a `null` or `undefined` value.

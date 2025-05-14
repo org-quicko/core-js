@@ -1,8 +1,8 @@
 import winston from 'winston';
-import { ClientException } from '../../exceptions';
-import { LoggingLevel } from '../../types';
-import { MDC } from '../MDC';
-import { LoggerProvider } from './LoggerProvider';
+import { ClientException } from '../../exceptions/ClientException.js';
+import { LoggingLevel } from '../../types/LoggingLevel.js';
+import { MDC } from '../MDC.js';
+import { LoggerProvider } from './LoggerProvider.js';
 
 const addMdcDataFormat = winston.format((info) => {
     info.path = MDC.get('path');
