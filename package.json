@@ -1,161 +1,160 @@
 {
-	"name": "@org.quicko/core",
-	"version": "1.0.0",
-	"description": "A library in typescript for common entities and utilities across Quicko",
-	"author": "Quicko",
-	"main": "dist/cjs/index.js",
-	"module": "dist/esm/index.js",
-	"types": "dist/types/index.d.ts",
-	"scripts": {
-		"clean": "rm -rf dist && npm cache clean --force",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
-		"prebuild": "npm run clean && npm run lint",
-		"build": "npm run build:cjs && npm run build:esm",
-		"build:cjs": "tsc -p tsconfig.cjs.json",
-		"build:esm": "tsc -p tsconfig.esm.json"
-	},
-	"license": "ISC",
-	"files": [
-		"dist/cjs/*",
-		"dist/esm/*",
-		"dist/types/*"
-	],
-	"exports": {
-		".": {
-			"types": "./dist/types/index.d.ts",
-			"node": {
-				"import": "./dist/esm/index.js",
-				"require": "./dist/cjs/index.js"
-			},
-			"browser": {
-				"import": "./dist/esm/index.js",
-				"require": "./dist/cjs/index.js"
-			},
-			"default": "./dist/esm/index.js"
-		},
-		"./beans": {
-			"types": "./dist/types/src/beans/index.d.ts",
-			"node": {
-				"import": "./dist/esm/src/beans/index.js",
-				"require": "./dist/cjs/src/beans/index.js"
-			},
-			"browser": {
-				"import": "./dist/esm/src/beans/index.js",
-				"require": "./dist/cjs/src/beans/index.js"
-			},
-			"default": "./dist/esm/src/beans/index.js"
-		},
-		"./types": {
-			"types": "./dist/types/src/types/index.d.ts",
-			"node": {
-				"import": "./dist/esm/src/types/index.js",
-				"require": "./dist/cjs/src/types/index.js"
-			},
-			"browser": {
-				"import": "./dist/esm/src/types/index.js",
-				"require": "./dist/cjs/src/types/index.js"
-			},
-			"default": "./dist/esm/src/types/index.js"
-		},
-		"./utils": {
-			"types": "./dist/types/src/utils/index.d.ts",
-			"node": {
-				"import": "./dist/esm/src/utils/index.js",
-				"require": "./dist/cjs/src/utils/index.js"
-			},
-			"browser": {
-				"import": "./dist/esm/src/utils/index.js",
-				"require": "./dist/cjs/src/utils/index.js"
-			},
-			"default": "./dist/esm/src/utils/index.js"
-		},
-		"./utils/date": {
-			"types": "./dist/types/src/utils/date/index.d.ts",
-			"node": {
-				"import": "./dist/esm/src/utils/date/index.js",
-				"require": "./dist/cjs/src/utils/date/index.js"
-			},
-			"browser": {
-				"import": "./dist/esm/src/utils/date/index.js",
-				"require": "./dist/cjs/src/utils/date/index.js"
-			},
-			"default": "./dist/esm/src/utils/date/index.js"
-		},
-		"./logger": {
-			"types": "./dist/types/src/logger/index.d.ts",
-			"node": {
-				"import": "./dist/esm/src/logger/index.js",
-				"require": "./dist/cjs/src/logger/index.js"
-			},
-			"browser": {
-				"import": "./dist/esm/src/logger/index.js",
-				"require": "./dist/cjs/src/logger/index.js"
-			},
-			"default": "./dist/esm/src/logger/index.js"
-		},
-		"./exceptions": {
-			"types": "./dist/types/src/exceptions/index.d.ts",
-			"node": {
-				"import": "./dist/esm/src/exceptions/index.js",
-				"require": "./dist/cjs/src/exceptions/index.js"
-			},
-			"browser": {
-				"import": "./dist/esm/src/exceptions/index.js",
-				"require": "./dist/cjs/src/exceptions/index.js"
-			},
-			"default": "./dist/esm/src/exceptions/index.js"
-		},
-		"./package.json": "./package.json"
-	},
-	"typesVersions": {
-		"*": {
-			"*": [
-				"dist/types/*"
-			],
-			"beans": [
-				"dist/types/src/beans/index.d.ts"
-			],
-			"types": [
-				"dist/types/src/types/index.d.ts"
-			],
-			"utils": [
-				"dist/types/src/utils/index.d.ts"
-			],
-			"utils/date": [
-				"dist/types/src/utils/date/index.d.ts"
-			],
-			"exceptions": [
-				"dist/types/src/exceptions/index.d.ts"
-			],
-			"logger": [
-				"dist/types/src/logger/index.d.ts"
-			]
-		}
-	},
-	"directories": {
-		"lib": "./dist"
-	},
-	"engines": {
-		"node": ">=14"
-	},
-	"dependencies": {
-		"@date-fns/tz": "^1.1.2",
-		"class-transformer": "^0.5.1",
-		"class-validator": "^0.14.1",
-		"date-fns": "^4.1.0",
-		"winston": "^3.17.0"
-	},
-	"devDependencies": {
-		"@types/node": "^22.7.0",
-		"@typescript-eslint/eslint-plugin": "^8.17.0",
-		"@typescript-eslint/parser": "^8.17.0",
-		"esbuild-plugin-eslint": "^0.3.7",
-		"eslint": "^8.2.0",
-		"eslint-config-airbnb": "^19.0.4",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-import-resolver-typescript": "^3.7.0",
-		"ts-node": "^10.9.2",
-		"typescript": "^5.6.2"
-	}
+  "name": "@org-quicko/core",
+  "version": "1.0.3",
+  "description": "A library in typescript for common entities and utilities across Quicko",
+  "author": "Quicko",
+  "main": "dist/cjs/build/node/index.cjs",
+  "module": "dist/esm/build/node/index.js",
+  "browser": "dist/browser/build/browser/index.js",
+  "types": "dist/types/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf dist && npm cache clean --force",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prebuild": "npm run clean && npm run lint",
+    "build": "rollup -c"
+  },
+  "license": "ISC",
+  "files": [
+    "dist/**/*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "node": {
+        "import": "./dist/esm/build/node/index.js",
+        "require": "./dist/cjs/build/node/index.cjs"
+      },
+      "browser": {
+        "import": "./dist/browser/build/browser/index.js"
+      },
+      "default": "./dist/esm/build/index.js"
+    },
+    "./beans": {
+      "types": "./dist/types/src/beans/index.d.ts",
+      "node": {
+        "import": "./dist/esm/src/beans/index.js",
+        "require": "./dist/cjs/src/beans/index.cjs"
+      },
+      "browser": {
+        "import": "./dist/browser/src/beans/index.js"
+      },
+      "default": "./dist/esm/src/beans/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/src/types/index.d.ts",
+      "node": {
+        "import": "./dist/esm/src/types/index.js",
+        "require": "./dist/cjs/src/types/index.cjs"
+      },
+      "browser": {
+        "import": "./dist/browser/src/types/index.js"
+      },
+      "default": "./dist/esm/src/types/index.js"
+    },
+    "./utils": {
+      "types": "./dist/types/src/utils/index.d.ts",
+      "node": {
+        "import": "./dist/esm/src/utils/index.js",
+        "require": "./dist/cjs/src/utils/index.cjs"
+      },
+      "browser": {
+        "import": "./dist/browser/src/utils/index.js"
+      },
+      "default": "./dist/esm/src/utils/index.js"
+    },
+    "./utils/date": {
+      "types": "./dist/types/src/utils/date/index.d.ts",
+      "node": {
+        "import": "./dist/esm/src/utils/date/index.js",
+        "require": "./dist/cjs/src/utils/date/index.cjs"
+      },
+      "browser": {
+        "import": "./dist/browser/src/utils/date/index.js"
+      },
+      "default": "./dist/esm/src/utils/date/index.js"
+    },
+    "./logger": {
+      "types": "./dist/types/src/logger/index.d.ts",
+      "node": {
+        "import": "./dist/esm/src/logger/index.js",
+        "require": "./dist/cjs/src/logger/index.cjs"
+      },
+      "browser": {
+        "import": "./dist/browser/src/logger/index.js"
+      },
+      "default": "./dist/esm/src/logger/index.js"
+    },
+    "./exceptions": {
+      "types": "./dist/types/src/exceptions/index.d.ts",
+      "node": {
+        "import": "./dist/esm/src/exceptions/index.js",
+        "require": "./dist/cjs/src/exceptions/index.cjs"
+      },
+      "browser": {
+        "import": "./dist/browser/src/exceptions/index.js"
+      },
+      "default": "./dist/esm/src/exceptions/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/types/*"
+      ],
+      "beans": [
+        "dist/types/src/beans/index.d.ts"
+      ],
+      "types": [
+        "dist/types/src/types/index.d.ts"
+      ],
+      "utils": [
+        "dist/types/src/utils/index.d.ts"
+      ],
+      "utils/date": [
+        "dist/types/src/utils/date/index.d.ts"
+      ],
+      "exceptions": [
+        "dist/types/src/exceptions/index.d.ts"
+      ],
+      "logger": [
+        "dist/types/src/logger/index.d.ts"
+      ]
+    }
+  },
+  "directories": {
+    "lib": "./dist"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "@date-fns/tz": "^1.1.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "date-fns": "^4.1.0",
+    "tslib": "^2.8.1",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "esbuild-plugin-eslint": "^0.3.7",
+    "rollup-plugin-bundle-size": "^1.0.3",
+    "rollup-plugin-dts": "^6.2.1",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "rollup": "^4.40.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
 }
