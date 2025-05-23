@@ -1,4 +1,4 @@
-import { HTTPException } from './HTTPException';
+import { HTTPException } from './HTTPException.js';
 
 /**
  * Exception thrown when a bad request is made to the server.

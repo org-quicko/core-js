@@ -1,3 +1,3 @@
-export * from './factory'
-export * from './MDC'
+export * from './factory/index.js'
+export * from './MDC.js'
 
