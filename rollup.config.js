@@ -56,7 +56,6 @@ export default [
       typescript({
         tsconfig: "./tsconfig.json",
         declaration: false,
-        outDir: undefined,
         rootDir: "./",
         exclude: ["node_modules", "dist"],
       }),
