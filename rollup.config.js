@@ -51,12 +51,17 @@ export default [
     input: "build/browser/index.ts",
     external: [...Object.keys(pkg.dependencies || {}), ...builtinModules],
     plugins: [
-      resolve({ browser: true }),
+      resolve({ 
+        browser: true,
+        extensions: [".js", ".ts"],
+        modulesOnly: true
+      }),
       commonjs(),
       typescript({
         tsconfig: "./tsconfig.json",
         declaration: false,
         rootDir: "./",
+        outDir: undefined,
         exclude: ["node_modules", "dist"],
       }),
     ],
@@ -65,8 +70,8 @@ export default [
         dir: "dist/browser",
         format: "esm",
         sourcemap: true,
-		preserveModules: true,
-		preserveModulesRoot: "src"
+		    preserveModules: true,
+		    preserveModulesRoot: "src"
       },
     ],
   },

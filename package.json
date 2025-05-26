@@ -29,7 +29,7 @@
       "browser": {
         "import": "./dist/browser/build/browser/index.js"
       },
-      "default": "./dist/esm/build/index.js"
+      "default": "./dist/esm/build/node/index.js"
     },
     "./beans": {
       "types": "./dist/types/src/beans/index.d.ts",
