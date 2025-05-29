@@ -17,7 +17,7 @@ export class LoggerFactory {
    */
   static createLogger(
     name: string,
-    level = LoggingLevel.info
+    level: LoggingLevel = LoggingLevel.info
   ): winston.Logger | undefined {
 
     const label = typeof name === "string" ? name : "Unknown";
