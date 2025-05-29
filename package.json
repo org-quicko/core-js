@@ -1,6 +1,6 @@
 {
   "name": "@org-quicko/core",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A library in typescript for common entities and utilities across Quicko",
   "author": "Quicko",
   "main": "dist/cjs/build/node/index.cjs",
