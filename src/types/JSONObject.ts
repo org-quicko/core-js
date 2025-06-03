@@ -1,4 +1,4 @@
-import { IllegalArgumentException, NullPointerException } from '../exceptions/index.js';
+import { BaseException, IllegalArgumentException } from '../exceptions/index.js';
 
 export type JSONValue =
     | string
@@ -40,7 +40,7 @@ export class JSONObject extends Map<string, JSONValue> {
             }
         }
 
-        throw new NullPointerException(`Value for Key: '${key}' not found`);
+        throw new BaseException(`Value for Key: '${key}' not found`);
     }
 
     getString(key: string): string {
@@ -55,7 +55,7 @@ export class JSONObject extends Map<string, JSONValue> {
                 throw new IllegalArgumentException('Value cannot be converted to string', e)
             }
         }
-        throw new NullPointerException(`Value for Key: '${key}' not found`);
+        throw new BaseException(`Value for Key: '${key}' not found`);
     }
 
     getNumber(key: string): number {
@@ -66,7 +66,7 @@ export class JSONObject extends Map<string, JSONValue> {
             }
             throw new IllegalArgumentException('Value cannot be converted to number')
         }
-        throw new NullPointerException(`Value for Key: '${key}' not found`);
+        throw new BaseException(`Value for Key: '${key}' not found`);
     }
 
     getBoolean(key: string): boolean {
@@ -78,7 +78,7 @@ export class JSONObject extends Map<string, JSONValue> {
             }
             throw new IllegalArgumentException('Value cannot be converted to boolean')
         }
-        throw new NullPointerException(`Value for Key: '${key}' not found`);
+        throw new BaseException(`Value for Key: '${key}' not found`);
     }
 
     getArray(key: string): JSONArray {
@@ -91,7 +91,7 @@ export class JSONObject extends Map<string, JSONValue> {
             }
             throw new IllegalArgumentException('Value cannot be converted to array')
         }
-        throw new NullPointerException(`Value for Key: '${key}' not found`);
+        throw new BaseException(`Value for Key: '${key}' not found`);
     }
 
     public toJSON(): { [x: string]: JSONValue } {
