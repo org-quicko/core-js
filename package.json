@@ -34,68 +34,68 @@
     "./beans": {
       "types": "./dist/types/src/beans/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/beans/index.js",
-        "require": "./dist/cjs/src/beans/index.cjs"
+        "import": "./dist/esm/beans/index.js",
+        "require": "./dist/cjs/beans/index.cjs"
       },
       "browser": {
-        "import": "./dist/browser/src/beans/index.js"
+        "import": "./dist/browser/beans/index.js"
       },
-      "default": "./dist/esm/src/beans/index.js"
+      "default": "./dist/esm/beans/index.js"
     },
     "./types": {
       "types": "./dist/types/src/types/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/types/index.js",
-        "require": "./dist/cjs/src/types/index.cjs"
+        "import": "./dist/esm/types/index.js",
+        "require": "./dist/cjs/types/index.cjs"
       },
       "browser": {
-        "import": "./dist/browser/src/types/index.js"
+        "import": "./dist/browser/types/index.js"
       },
-      "default": "./dist/esm/src/types/index.js"
+      "default": "./dist/esm/types/index.js"
     },
     "./utils": {
       "types": "./dist/types/src/utils/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/utils/index.js",
-        "require": "./dist/cjs/src/utils/index.cjs"
+        "import": "./dist/esm/utils/index.js",
+        "require": "./dist/cjs/utils/index.cjs"
       },
       "browser": {
-        "import": "./dist/browser/src/utils/index.js"
+        "import": "./dist/browser/utils/index.js"
       },
-      "default": "./dist/esm/src/utils/index.js"
+      "default": "./dist/esm/utils/index.js"
     },
     "./utils/date": {
       "types": "./dist/types/src/utils/date/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/utils/date/index.js",
-        "require": "./dist/cjs/src/utils/date/index.cjs"
+        "import": "./dist/esm/utils/date/index.js",
+        "require": "./dist/cjs/utils/date/index.cjs"
       },
       "browser": {
-        "import": "./dist/browser/src/utils/date/index.js"
+        "import": "./dist/browser/utils/date/index.js"
       },
-      "default": "./dist/esm/src/utils/date/index.js"
+      "default": "./dist/esm/utils/date/index.js"
     },
     "./logger": {
       "types": "./dist/types/src/logger/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/logger/index.js",
-        "require": "./dist/cjs/src/logger/index.cjs"
+        "import": "./dist/esm/logger/index.js",
+        "require": "./dist/cjs/logger/index.cjs"
       },
       "browser": {
-        "import": "./dist/browser/src/logger/index.js"
+        "import": "./dist/browser/logger/index.js"
       },
-      "default": "./dist/esm/src/logger/index.js"
+      "default": "./dist/esm/logger/index.js"
     },
     "./exceptions": {
       "types": "./dist/types/src/exceptions/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/exceptions/index.js",
-        "require": "./dist/cjs/src/exceptions/index.cjs"
+        "import": "./dist/esm/exceptions/index.js",
+        "require": "./dist/cjs/exceptions/index.cjs"
       },
       "browser": {
-        "import": "./dist/browser/src/exceptions/index.js"
+        "import": "./dist/browser/exceptions/index.js"
       },
-      "default": "./dist/esm/src/exceptions/index.js"
+      "default": "./dist/esm/exceptions/index.js"
     },
     "./package.json": "./package.json"
   },

@@ -10,7 +10,14 @@ const pkg = require("./package.json");
 export default [
   // Bundle for CommonJS and ESM with preserved module structure
   {
-    input: "build/node/index.ts",
+    input: [
+      "build/node/index.ts",
+      "src/beans/index.ts",
+      "src/exceptions/index.ts",
+      "src/logger/index.ts",
+      "src/types/index.ts",
+      "src/utils/index.ts",
+    ],
     external: [...Object.keys(pkg.dependencies || {}), ...builtinModules],
     plugins: [
       resolve({
@@ -48,13 +55,19 @@ export default [
 
   {
     // build for browser
-    input: "build/browser/index.ts",
+    input: [
+      "build/browser/index.ts",
+      "src/beans/index.ts",
+      "src/exceptions/index.ts",
+      "src/types/index.ts",
+      "src/utils/index.ts",
+    ],
     external: [...Object.keys(pkg.dependencies || {}), ...builtinModules],
     plugins: [
-      resolve({ 
+      resolve({
         browser: true,
         extensions: [".js", ".ts"],
-        modulesOnly: true
+        modulesOnly: true,
       }),
       commonjs(),
       typescript({
@@ -70,22 +83,29 @@ export default [
         dir: "dist/browser",
         format: "esm",
         sourcemap: true,
-		    preserveModules: true,
-		    preserveModulesRoot: "src"
+        preserveModules: true,
+        preserveModulesRoot: "src",
       },
     ],
   },
 
   // Generate declaration files
   {
-    input: "index.ts",
+    input: [
+    "index.ts",
+    "src/beans/index.ts",
+    "src/exceptions/index.ts",
+    "src/logger/index.ts",
+    "src/types/index.ts",
+    "src/utils/index.ts",
+    "src/utils/date/index.ts"
+  ],
     plugins: [dts()],
     output: [
       {
         dir: "dist/types",
-        format: "esm",
         preserveModules: true,
-        preserveModulesRoot: "src",
+        preserveModulesRoot: ".",
       },
     ],
   },
