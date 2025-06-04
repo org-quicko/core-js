@@ -17,7 +17,8 @@ export class LoggerFactory {
    */
   static createLogger(
     name: string,
-    level: LoggingLevel = LoggingLevel.info
+    level: LoggingLevel = LoggingLevel.info,
+    format?: winston.Logform.Format
   ): winston.Logger | undefined {
 
     const label = typeof name === "string" ? name : "Unknown";
@@ -27,12 +28,15 @@ export class LoggerFactory {
     }
 
     try {
+
+      const defaultformat = winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+      );
+
       const logger = winston.createLogger({
         level: level,
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.json()
-        ),
+        format: format ? winston.format.combine(format, defaultformat) : defaultformat,
         defaultMeta: { label },
         transports: [new winston.transports.Console()],
       });
