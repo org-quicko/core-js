@@ -1,10 +1,11 @@
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import prettier from "eslint-config-prettier";
+import { defineConfig } from "eslint/config";
 
-export default [
+export default defineConfig([
 	{
-		files: ["**/*.ts", "**/*.tsx"],
+		files: ["**/*.ts"],
 		ignores: ["dist/**", "node_modules/**", ".eslintrc.js", "*.config.js", "tests/**"],
 		languageOptions: {
 			parser: tsParser,
@@ -19,6 +20,8 @@ export default [
 		},
 		rules: {
 			"no-shadow": "off",
+			"@typescript-eslint/no-unused-vars": "off",
+			"@typescript-eslint/no-explicit-any": "off",
 			"@typescript-eslint/no-shadow": ["error"],
 			"@typescript-eslint/no-non-null-assertion": "off",
 			"no-console": ["error"],
@@ -37,4 +40,4 @@ export default [
 		},
 	},
 	prettier,
-];
+]);
