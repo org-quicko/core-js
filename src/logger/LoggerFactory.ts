@@ -19,24 +19,24 @@ export class LoggerFactory {
     name: string,
     level: LoggingLevel = LoggingLevel.info,
     format?: winston.Logform.Format
-  ): winston.Logger | undefined {
+  ): winston.Logger {
 
     const label = typeof name === "string" ? name : "Unknown";
 
     if (loggers.has(label)) {
-      return loggers.get(label);
+      return loggers.get(label)!;
     }
 
     try {
 
-      const defaultformat = winston.format.combine(
+      const defaultFormat = winston.format.combine(
         winston.format.timestamp(),
         winston.format.json()
       );
 
       const logger = winston.createLogger({
         level: level,
-        format: format ? winston.format.combine(format, defaultformat) : defaultformat,
+        format: format ? winston.format.combine(format, defaultFormat) : defaultFormat,
         defaultMeta: { label },
         transports: [new winston.transports.Console()],
       });
