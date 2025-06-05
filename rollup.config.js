@@ -62,7 +62,6 @@ const getModulesForEnvironment = (environment = 'node') => {
 const getExternals = (environment = 'node') => {
   const base = [
     ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.devDependencies || {})
   ]
 
   if(environment === 'node') {
