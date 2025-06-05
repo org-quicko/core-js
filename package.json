@@ -15,7 +15,7 @@
     "prebuild": "npm run clean && npm run lint",
     "build": "rollup -c"
   },
-  "license": "UNLICENSED",
+  "license": "ISC",
   "files": [
     "dist/**/*"
   ],
