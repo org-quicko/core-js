@@ -1,1 +1,1 @@
-export * from './date/index.js'
+export * from './date'

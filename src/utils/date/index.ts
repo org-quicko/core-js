@@ -1,1 +1,1 @@
-export * from './DateUtil.js'
+export * from './DateUtil'

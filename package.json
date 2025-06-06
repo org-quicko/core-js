@@ -1,6 +1,6 @@
 {
   "name": "@org-quicko/core",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A library in typescript for common entities and utilities across Quicko",
   "author": "Quicko",
   "main": "dist/cjs/build/node/index.cjs",
@@ -26,76 +26,54 @@
         "import": "./dist/esm/build/node/index.js",
         "require": "./dist/cjs/build/node/index.cjs"
       },
-      "browser": {
-        "import": "./dist/browser/build/browser/index.js"
-      },
-      "default": "./dist/esm/build/node/index.js"
+      "default": "./dist/browser/build/browser/index.js"
     },
     "./beans": {
       "types": "./dist/types/src/beans/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/beans/index.js",
-        "require": "./dist/cjs/src/beans/index.cjs"
+        "import": "./dist/esm/beans/index.js",
+        "require": "./dist/cjs/beans/index.cjs"
       },
-      "browser": {
-        "import": "./dist/browser/src/beans/index.js"
-      },
-      "default": "./dist/esm/src/beans/index.js"
+      "default": "./dist/browser/beans/index.js"
     },
     "./types": {
       "types": "./dist/types/src/types/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/types/index.js",
-        "require": "./dist/cjs/src/types/index.cjs"
+        "import": "./dist/esm/types/index.js",
+        "require": "./dist/cjs/types/index.cjs"
       },
-      "browser": {
-        "import": "./dist/browser/src/types/index.js"
-      },
-      "default": "./dist/esm/src/types/index.js"
+      "default": "./dist/browser/types/index.js"
     },
     "./utils": {
       "types": "./dist/types/src/utils/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/utils/index.js",
-        "require": "./dist/cjs/src/utils/index.cjs"
+        "import": "./dist/esm/utils/index.js",
+        "require": "./dist/cjs/utils/index.cjs"
       },
-      "browser": {
-        "import": "./dist/browser/src/utils/index.js"
-      },
-      "default": "./dist/esm/src/utils/index.js"
+      "default": "./dist/browser/utils/index.js"
     },
     "./utils/date": {
       "types": "./dist/types/src/utils/date/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/utils/date/index.js",
-        "require": "./dist/cjs/src/utils/date/index.cjs"
+        "import": "./dist/esm/utils/date/index.js",
+        "require": "./dist/cjs/utils/date/index.cjs"
       },
-      "browser": {
-        "import": "./dist/browser/src/utils/date/index.js"
-      },
-      "default": "./dist/esm/src/utils/date/index.js"
+      "default": "./dist/browser/utils/date/index.js"
     },
     "./logger": {
       "types": "./dist/types/src/logger/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/logger/index.js",
-        "require": "./dist/cjs/src/logger/index.cjs"
-      },
-      "browser": {
-        "import": "./dist/browser/src/logger/index.js"
-      },
-      "default": "./dist/esm/src/logger/index.js"
+        "import": "./dist/esm/logger/index.js",
+        "require": "./dist/cjs/logger/index.cjs"
+      }
     },
     "./exceptions": {
       "types": "./dist/types/src/exceptions/index.d.ts",
       "node": {
-        "import": "./dist/esm/src/exceptions/index.js",
-        "require": "./dist/cjs/src/exceptions/index.cjs"
+        "import": "./dist/esm/exceptions/index.js",
+        "require": "./dist/cjs/exceptions/index.cjs"
       },
-      "browser": {
-        "import": "./dist/browser/src/exceptions/index.js"
-      },
-      "default": "./dist/esm/src/exceptions/index.js"
+      "default": "./dist/browser/exceptions/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -139,21 +117,19 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "@types/node": "^22.7.0",
-    "@typescript-eslint/eslint-plugin": "^8.17.0",
-    "@typescript-eslint/parser": "^8.17.0",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@types/node": "^22.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.33.1",
+    "@typescript-eslint/parser": "^8.33.1",
     "esbuild-plugin-eslint": "^0.3.7",
-    "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-dts": "^6.2.1",
-    "eslint": "^8.2.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^3.7.0",
+    "glob": "^11.0.2",
     "rollup": "^4.40.2",
+    "rollup-plugin-dts": "^6.2.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   }

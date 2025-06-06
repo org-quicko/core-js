@@ -1,4 +1,4 @@
-import { HTTPException } from './HTTPException.js';
+import { HTTPException } from './HTTPException';
 
 /**
  * Exception thrown when a request is unauthorized.

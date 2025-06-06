@@ -1,3 +1,3 @@
-export * from './JSONObject.js';
-export * from './LoggingLevel.js';
-export * from './SortOrder.js';
+export * from './JSONObject';
+export * from './LoggingLevel';
+export * from './SortOrder';
