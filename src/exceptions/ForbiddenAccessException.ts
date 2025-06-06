@@ -1,4 +1,4 @@
-import { HTTPException } from './HTTPException.js';
+import { HTTPException } from './HTTPException';
 
 /**
  * Exception thrown when access to a resource is forbidden.

@@ -1,1 +1,1 @@
-export * from './BaseObject.js';
+export * from './BaseObject';

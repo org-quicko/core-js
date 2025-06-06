@@ -1,6 +1,6 @@
 import winston from "winston";
-import { ClientException } from "../exceptions/ClientException.js";
-import { LoggingLevel } from "../types/LoggingLevel.js";
+import { ClientException } from "../exceptions";
+import { LoggingLevel } from "../types";
 
 /**
  * A factory class for managing logger instances.

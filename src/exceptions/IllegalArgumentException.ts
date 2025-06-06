@@ -1,4 +1,4 @@
-import { BaseException } from './BaseException.js';
+import { BaseException } from './BaseException';
 
 /**
  * Exception thrown when an illegal or inappropriate argument is passed.

@@ -13,8 +13,8 @@
 		"noImplicitAny": false /* Raise error on expressions and declarations with an implied 'any' type. */,
 
 		/* Module Resolution Options */
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
 		"baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
 		"paths": {
 			"*": ["node_modules/*", "environment/*"]

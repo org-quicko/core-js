@@ -1,4 +1,4 @@
-import { BaseException } from "./BaseException.js";
+import { BaseException } from "./BaseException";
 
 /**
  * Exception thrown when a conversion operation fails.

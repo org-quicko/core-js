@@ -1,4 +1,4 @@
-import { BaseException, IllegalArgumentException } from '../exceptions/index.js';
+import { BaseException, IllegalArgumentException } from '../exceptions';
 
 export type JSONValue =
     | string

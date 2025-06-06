@@ -1,2 +1,2 @@
-export * from './LoggerFactory.js';
+export * from './LoggerFactory';
 
