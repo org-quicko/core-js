@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "@org-quicko/core",
+  "definitions": {
+    "SortOrder": {
+      "type": "string",
+      "enum": [
+        "asc",
+        "desc"
+      ],
+      "title": "SortOrder"
+    },
+    "BaseObject": {
+      "title": "BaseObject",
+      "type": "object",
+      "properties": {
+        "@entity": {
+          "type": "string",
+          "description": "Type discriminator for this entity",
+          "default": "org.quicko.base_object",
+          "const": "org.quicko.base_object"
+        },
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "@entity"
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/definitions/BaseObject"
+    },
+    {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/BaseObject"
+      }
+    }
+  ]
+}
