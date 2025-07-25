@@ -1,6 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "@org-quicko/core",
+  "metadata": {
+    "x-typescript-package": "@org-quicko/core"
+  },
   "definitions": {
     "SortOrder": {
       "type": "string",
