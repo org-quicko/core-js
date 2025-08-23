@@ -1,5 +1,5 @@
 import { TZDate } from '@date-fns/tz';
-import { add, compareAsc, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarYears, Duration, endOfDay, format, isLeapYear, isValid, parse, startOfDay } from 'date-fns';
+import { add, compareAsc, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarYears, differenceInYears, Duration, endOfDay, format, isLeapYear, isValid, parse, startOfDay } from 'date-fns';
 import { IllegalArgumentException } from '../../exceptions';
 
 /**
@@ -125,6 +125,20 @@ class BaseDateUtil {
         const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
         const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
         return Math.abs(differenceInCalendarMonths(first, second));
+    }
+
+    /**
+     * Calculates the absolute number of years between two dates or timestamps.
+     * @param firstDate The first date or timestamp.
+     * @param secondDate The second date or timestamp.
+     * @returns The number of years between the two dates.
+     */
+    static anniversaryYearsInBetween(firstDate: Date, secondDate: Date): number;
+    static anniversaryYearsInBetween(firstDate: number, secondDate: number): number;
+    static anniversaryYearsInBetween(firstDate: Date | number, secondDate: Date | number): number {
+        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
+        return Math.abs(differenceInYears(first, second));
     }
 
     /**
