@@ -1,51 +1,159 @@
-import winston from "winston";
-import { ClientException } from "../exceptions";
-import { LoggingLevel } from "../types";
+import winston, { LoggerOptions } from "winston";
+import { BaseException } from "../exceptions";
+import { ErrorFormat } from "./format/ErrorFormat";
 
 /**
- * A factory class for managing logger instances.
- * Provides methods to retrieve and store loggers in a shared storage.
+ * Factory class for creating and managing Winston logger instances.
+ *
+ * @description
+ * Provides centralized management of logger instances with consistent configuration.
+ * Supports custom logging levels, formats, and transports while maintaining a shared
+ * logger instance for the application.
+ *
+ * @example
+ * ```typescript
+ * const logger = LoggerFactory.createLogger({
+ *   level: 'info',
+ *   transports: [new winston.transports.Console()]
+ * });
+ *
+ * const childLogger = LoggerFactory.getLogger('MyModule');
+ * childLogger.info('Application started');
+ * ```
  */
-export const loggers: Map<string, winston.Logger> = new Map<string, winston.Logger>();
-
 export class LoggerFactory {
+  /** @type {winston.Logger} Shared logger instance managed by the factory */
+  static logger: winston.Logger;
+
   /**
-   * Retrieves a logger instance by its name.
+   * Creates and initializes a logger instance with the provided configuration.
    *
-   * @param name The name of the logger to retrieve.
-   * @returns The logger instance if found, otherwise `undefined`.
+   * @description
+   * Initializes a new Winston logger with combined default and custom formats.
+   * Default format includes timestamp, error formatting with cause chains,
+   * error handling, JSON formatting, and pretty printing.
+   *
+   * @param {LoggerOptions} options - Winston logger configuration options
+   * @param {string} [options.level='info'] - Logging level (error, warn, info, http, debug, verbose, silly)
+   * @param {winston.LogFormat} [options.format] - Additional custom format to combine with defaults
+   * @param {object} [options.defaultMeta] - Default metadata to add to all log entries
+   * @param {winston.transport[]} [options.transports] - Transport instances (defaults to Console)
+   *
+   * @returns {winston.Logger} Configured logger instance
+   *
+   * @throws {BaseException} If logger initialization fails
+   *
+   * @example
+   * ```typescript
+   * const logger = LoggerFactory.createLogger({
+   *   level: 'debug',
+   *   defaultMeta: { service: 'api-service' },
+   *   transports: [
+   *     new winston.transports.Console(),
+   *     new winston.transports.File({ filename: 'combined.log' })
+   *   ]
+   * });
+   * ```
+   *
+   * @note
+   * **Known Issue**: Static logger is overwritten every time `createLogger()` is called.
+   * If another part of your program calls `createLogger()` again, all modules will switch
+   * to the new logger configuration unexpectedly. Consider initializing the logger once
+   * during application startup and reusing it via `getLogger()`.
    */
   static createLogger(
-    name: string,
-    level: LoggingLevel = LoggingLevel.info,
-    format?: winston.Logform.Format
+    options: LoggerOptions
   ): winston.Logger {
+    LoggerFactory.logger = LoggerFactory.init(options);
 
-    const label = typeof name === "string" ? name : "Unknown";
+    return LoggerFactory.logger;
+  }
 
-    if (loggers.has(label)) {
-      return loggers.get(label)!;
-    }
-
+  /**
+   * Initializes a Winston logger with default and custom format configurations.
+   *
+   * @description
+   * Internal method that sets up the logger with a standard format pipeline:
+   * 1. Timestamp - adds ISO timestamp to all log entries
+   * 2. ErrorFormat - serializes error cause chains for complete error context
+   * 3. Error handling - captures stack traces and cause information
+   * 4. JSON formatting - converts logs to JSON structure
+   * 5. Pretty printing - formats output for readability
+   *
+   * Custom formats are combined with the default pipeline for flexibility.
+   *
+   * @param {LoggerOptions} options - Logger configuration options
+   *
+   * @returns {winston.Logger} Initialized logger instance
+   *
+   * @throws {BaseException} Wraps any initialization errors with context
+   *
+   * @private
+   */
+  private static init(
+    options: LoggerOptions
+  ) {
     try {
-
       const defaultFormat = winston.format.combine(
         winston.format.timestamp(),
+        winston.format.errors({ stack: true, cause: true }),
+        ErrorFormat(),
         winston.format.json()
       );
 
       const logger = winston.createLogger({
-        level: level,
-        format: format ? winston.format.combine(format, defaultFormat) : defaultFormat,
-        defaultMeta: { label },
-        transports: [new winston.transports.Console()],
+        level: options.level,
+        format: options.format
+          ? winston.format.combine(
+              defaultFormat,
+              options.format
+            )
+          : defaultFormat,
+        defaultMeta: options.defaultMeta,
+        transports: options.transports
+          ? options.transports
+          : [new winston.transports.Console()],
       });
-
-      loggers.set(label, logger);
 
       return logger;
     } catch (error) {
-      throw new ClientException(`Error creating logger`, error, 500);
+      throw new BaseException(`Error creating logger`, error, 500);
+    }
+  }
+
+  /**
+   * Retrieves a child logger instance with additional context metadata.
+   *
+   * @description
+   * Creates a child logger from the shared logger instance that inherits all configuration
+   * but adds a label and optional metadata for request-specific or module-specific logging.
+   * Child loggers are useful for tracking logs by module, request ID, user ID, etc.
+   *
+   * @param {string} label - Identifier for the logger (typically module or request name)
+   * @param {object} [options] - Additional metadata to include in all logs from this logger
+   *
+   * @returns {winston.Logger} Child logger instance with combined metadata
+   *
+   * @throws {BaseException} If no shared logger has been initialized via createLogger()
+   *
+   * @example
+   * ```typescript
+   * const moduleLogger = LoggerFactory.getLogger('UserService', {
+   *   requestId: '12345',
+   *   userId: 'user-789'
+   * });
+   *
+   * moduleLogger.info('User authenticated'); // Includes label and additional metadata
+   * ```
+   */
+  static getLogger(
+    label: string,
+    options?: object
+  ): winston.Logger {
+    if (LoggerFactory.logger) {
+      return LoggerFactory.logger.child({ label, ...options });
+    } else {
+      throw new BaseException(`Logger not found`, 500);
     }
   }
 }
