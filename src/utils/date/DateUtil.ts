@@ -6,7 +6,7 @@ import { IllegalArgumentException } from '../../exceptions';
  * Utility class for date and time operations. Provides methods for parsing,
  * formatting, and performing calculations with dates and times.
  */
-class BaseDateUtil {
+export class DateUtil {
 
     static readonly ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
 
@@ -15,7 +15,7 @@ class BaseDateUtil {
      * @param timeZone The IANA time zone identifier.
      * @returns Current date and time in the specified time zone.
      */
-    protected static now(timeZone: string): Date {
+    static now(timeZone: string): Date {
         return new TZDate(new Date(), timeZone);
     }
 
@@ -35,7 +35,7 @@ class BaseDateUtil {
      * @throws {IllegalArgumentException} If the date string is invalid.
      * @returns Parsed Date object.
      */
-    protected static readDate(dateString: string, dateFormat = this.ISO_8601_FORMAT, timeZone: string): Date {
+    static readDate(dateString: string, dateFormat = this.ISO_8601_FORMAT, timeZone: string): Date {
         const date = parse(dateString, dateFormat, TZDate.tz(timeZone));
         if (!isValid(date)) {
             throw new IllegalArgumentException('Invalid date string or date format');
@@ -50,9 +50,9 @@ class BaseDateUtil {
      * @param dateFormat The desired output format (default: ISO_8601_FORMAT).
      * @returns Formatted date string.
      */
-    protected static printDate(date: Date, timeZone: string, dateFormat?: string): string;
-    protected static printDate(date: number, timeZone: string, dateFormat?: string): string;
-    protected static printDate(date: Date | number, timeZone: string, dateFormat: string = this.ISO_8601_FORMAT): string {
+    static printDate(date: Date, timeZone: string, dateFormat?: string): string;
+    static printDate(date: number, timeZone: string, dateFormat?: string): string;
+    static printDate(date: Date | number, timeZone: string, dateFormat: string = this.ISO_8601_FORMAT): string {
         const normalizedDate = typeof date === 'number' ? new Date(date) : date;
         return format(new TZDate(normalizedDate, timeZone), dateFormat);
     }
@@ -63,9 +63,9 @@ class BaseDateUtil {
      * @param timeZone The IANA time zone identifier.
      * @returns The start of the day as a Date object.
      */
-    protected static getStartOfDay(date: Date, timeZone: string): Date;
-    protected static getStartOfDay(date: number, timeZone: string): Date;
-    protected static getStartOfDay(date: Date | number, timeZone: string): Date {
+    static getStartOfDay(date: Date, timeZone: string): Date;
+    static getStartOfDay(date: number, timeZone: string): Date;
+    static getStartOfDay(date: Date | number, timeZone: string): Date {
         const normalizedDate = typeof date === 'number' ? new Date(date) : date;
         return startOfDay(new TZDate(normalizedDate, timeZone));
     }
@@ -76,9 +76,9 @@ class BaseDateUtil {
      * @param timeZone The IANA time zone identifier.
      * @returns The end of the day as a Date object.
      */
-    protected static getEndOfDay(date: Date, timeZone: string): Date;
-    protected static getEndOfDay(date: number, timeZone: string): Date;
-    protected static getEndOfDay(date: Date | number, timeZone: string): Date {
+    static getEndOfDay(date: Date, timeZone: string): Date;
+    static getEndOfDay(date: number, timeZone: string): Date;
+    static getEndOfDay(date: Date | number, timeZone: string): Date {
         const normalizedDate = typeof date === 'number' ? new Date(date) : date;
         return endOfDay(new TZDate(normalizedDate, timeZone));
     }
@@ -91,7 +91,7 @@ class BaseDateUtil {
      */
     static isValidDate(dateString: string, dateFormat?: string): boolean {
         try {
-            DateUtil.readDate(dateString, dateFormat);
+            DateUtil.readDate(dateString, dateFormat, "UTC");
             return true;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -175,7 +175,7 @@ class BaseDateUtil {
      * @returns `true` if the year is a leap year, otherwise `false`.
      */
     static isLeapYear(year: number): boolean {
-        return isLeapYear(DateUtil.readDate(year.toString(), 'yyyy'));
+        return isLeapYear(DateUtil.readDate(year.toString(), 'yyyy', "UTC"));
     }
 
 
@@ -195,69 +195,5 @@ class BaseDateUtil {
      */
     static toMillis(date: Date): number {
         return date.getTime();
-    }
-}
-
-/**
- * Utility class for handling date operations in a fixed time zone.
- * Extends BaseDateUtil with default settings for the 'Asia/Kolkata' time zone.
- */
-export class DateUtil extends BaseDateUtil {
-    /** Default time zone used for all date operations. */
-    static readonly TIMEZONE = 'Asia/Kolkata';
-    /**
-     * Gets the current date and time in the default time zone.
-     * @returns Current date and time as a Date object.
-     */
-    static override now(): Date {
-        return BaseDateUtil.now(this.TIMEZONE);
-    }
-
-    /**
-     * Parses a date string into a Date object using the default time zone.
-     * @param dateString The date string to parse.
-     * @param dateFormat Optional format of the date string (default: ISO_8601_FORMAT).
-     * @throws {IllegalArgumentException} If the date string is invalid.
-     * @returns Parsed Date object.
-     */
-    static override readDate(dateString: string, dateFormat?: string): Date {
-        return BaseDateUtil.readDate(dateString, dateFormat || DateUtil.ISO_8601_FORMAT, this.TIMEZONE);
-    }
-
-    /**
-     * Formats a Date or timestamp into a string using the default time zone.
-     * @param date The date or timestamp to format.
-     * @param dateFormat Optional desired output format (default: ISO_8601_FORMAT).
-     * @returns Formatted date string.
-     */
-    static override printDate(date: Date, dateFormat?: string): string;
-    static override printDate(date: number, dateFormat?: string): string;
-    static override printDate(date: Date | number, dateFormat = DateUtil.ISO_8601_FORMAT): string {
-        const normalizedDate = typeof date === 'number' ? new Date(date) : date;
-        return BaseDateUtil.printDate(normalizedDate, this.TIMEZONE, dateFormat);
-    }
-
-    /**
-     * Gets the start of the day for a given date or timestamp using the default time zone.
-     * @param date The date or timestamp to calculate from.
-     * @returns A Date object representing the start of the day.
-     */
-    static override getStartOfDay(date: Date): Date;
-    static override getStartOfDay(date: number): Date;
-    static override getStartOfDay(date: Date | number): Date {
-        const normalizedDate = typeof date === 'number' ? new Date(date) : date;
-        return BaseDateUtil.getStartOfDay(normalizedDate, this.TIMEZONE);
-    }
-
-    /**
-     * Gets the end of the day for a given date or timestamp using the default time zone.
-     * @param date The date or timestamp to calculate from.
-     * @returns A Date object representing the end of the day.
-     */
-    static override getEndOfDay(date: Date): Date;
-    static override getEndOfDay(date: number): Date;
-    static override getEndOfDay(date: Date | number): Date {
-        const normalizedDate = typeof date === 'number' ? new Date(date) : date;
-        return BaseDateUtil.getEndOfDay(normalizedDate, this.TIMEZONE);
     }
 }

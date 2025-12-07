@@ -1,136 +1,137 @@
 {
-  "name": "@org-quicko/core",
-  "version": "2.0.0-alpha",
-  "description": "A library in typescript for common entities and utilities across Quicko",
-  "author": "Quicko",
-  "main": "dist/cjs/build/node/index.cjs",
-  "module": "dist/esm/build/node/index.js",
-  "browser": "dist/browser/build/browser/index.js",
-  "types": "dist/types/index.d.ts",
-  "type": "module",
-  "scripts": {
-    "clean": "rm -rf dist && npm cache clean --force",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "prebuild": "npm run clean && npm run lint",
-    "build": "rollup -c"
-  },
-  "license": "ISC",
-  "files": [
-    "dist/**/*"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "node": {
-        "import": "./dist/esm/build/node/index.js",
-        "require": "./dist/cjs/build/node/index.cjs"
-      },
-      "default": "./dist/browser/build/browser/index.js"
-    },
-    "./beans": {
-      "types": "./dist/types/src/beans/index.d.ts",
-      "node": {
-        "import": "./dist/esm/beans/index.js",
-        "require": "./dist/cjs/beans/index.cjs"
-      },
-      "default": "./dist/browser/beans/index.js"
-    },
-    "./types": {
-      "types": "./dist/types/src/types/index.d.ts",
-      "node": {
-        "import": "./dist/esm/types/index.js",
-        "require": "./dist/cjs/types/index.cjs"
-      },
-      "default": "./dist/browser/types/index.js"
-    },
-    "./utils": {
-      "types": "./dist/types/src/utils/index.d.ts",
-      "node": {
-        "import": "./dist/esm/utils/index.js",
-        "require": "./dist/cjs/utils/index.cjs"
-      },
-      "default": "./dist/browser/utils/index.js"
-    },
-    "./utils/date": {
-      "types": "./dist/types/src/utils/date/index.d.ts",
-      "node": {
-        "import": "./dist/esm/utils/date/index.js",
-        "require": "./dist/cjs/utils/date/index.cjs"
-      },
-      "default": "./dist/browser/utils/date/index.js"
-    },
-    "./logger": {
-      "types": "./dist/types/src/logger/index.d.ts",
-      "node": {
-        "import": "./dist/esm/logger/index.js",
-        "require": "./dist/cjs/logger/index.cjs"
-      }
-    },
-    "./exceptions": {
-      "types": "./dist/types/src/exceptions/index.d.ts",
-      "node": {
-        "import": "./dist/esm/exceptions/index.js",
-        "require": "./dist/cjs/exceptions/index.cjs"
-      },
-      "default": "./dist/browser/exceptions/index.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/types/*"
-      ],
-      "beans": [
-        "dist/types/src/beans/index.d.ts"
-      ],
-      "types": [
-        "dist/types/src/types/index.d.ts"
-      ],
-      "utils": [
-        "dist/types/src/utils/index.d.ts"
-      ],
-      "utils/date": [
-        "dist/types/src/utils/date/index.d.ts"
-      ],
-      "exceptions": [
-        "dist/types/src/exceptions/index.d.ts"
-      ],
-      "logger": [
-        "dist/types/src/logger/index.d.ts"
-      ]
-    }
-  },
-  "directories": {
-    "lib": "./dist"
-  },
-  "engines": {
-    "node": ">=14"
-  },
-  "dependencies": {
-    "@date-fns/tz": "^1.1.2",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
-    "date-fns": "^4.1.0",
-    "tslib": "^2.8.1",
-    "winston": "^3.17.0"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^28.0.3",
-    "@rollup/plugin-node-resolve": "^16.0.1",
-    "@rollup/plugin-typescript": "^12.1.2",
-    "@types/node": "^22.7.0",
-    "@typescript-eslint/eslint-plugin": "^8.33.1",
-    "@typescript-eslint/parser": "^8.33.1",
-    "esbuild-plugin-eslint": "^0.3.7",
-    "eslint": "^9.28.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-import-resolver-typescript": "^3.7.0",
-    "glob": "^11.0.2",
-    "rollup": "^4.40.2",
-    "rollup-plugin-dts": "^6.2.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
-  }
+	"name": "@org-quicko/core",
+	"version": "2.0.0-alpha",
+	"description": "A library in typescript for common entities and utilities across Quicko",
+	"author": "Quicko",
+	"main": "dist/cjs/build/node/index.cjs",
+	"module": "dist/esm/build/node/index.js",
+	"browser": "dist/browser/build/browser/index.js",
+	"types": "dist/types/index.d.ts",
+	"type": "module",
+	"scripts": {
+		"clean": "rm -rf dist && npm cache clean --force",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"prebuild": "npm run clean && npm run lint",
+		"build": "rollup -c",
+		"test:date:util": "set NODE_ENV=local && node --experimental-vm-modules node_modules/jest/bin/jest.js run ./tests/DateUtil.test.ts"
+	},
+	"license": "ISC",
+	"files": [
+		"dist/**/*"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/types/index.d.ts",
+			"node": {
+				"import": "./dist/esm/build/node/index.js",
+				"require": "./dist/cjs/build/node/index.cjs"
+			},
+			"default": "./dist/browser/build/browser/index.js"
+		},
+		"./beans": {
+			"types": "./dist/types/src/beans/index.d.ts",
+			"node": {
+				"import": "./dist/esm/beans/index.js",
+				"require": "./dist/cjs/beans/index.cjs"
+			},
+			"default": "./dist/browser/beans/index.js"
+		},
+		"./types": {
+			"types": "./dist/types/src/types/index.d.ts",
+			"node": {
+				"import": "./dist/esm/types/index.js",
+				"require": "./dist/cjs/types/index.cjs"
+			},
+			"default": "./dist/browser/types/index.js"
+		},
+		"./utils": {
+			"types": "./dist/types/src/utils/index.d.ts",
+			"node": {
+				"import": "./dist/esm/utils/index.js",
+				"require": "./dist/cjs/utils/index.cjs"
+			},
+			"default": "./dist/browser/utils/index.js"
+		},
+		"./utils/date": {
+			"types": "./dist/types/src/utils/date/index.d.ts",
+			"node": {
+				"import": "./dist/esm/utils/date/index.js",
+				"require": "./dist/cjs/utils/date/index.cjs"
+			},
+			"default": "./dist/browser/utils/date/index.js"
+		},
+		"./logger": {
+			"types": "./dist/types/src/logger/index.d.ts",
+			"node": {
+				"import": "./dist/esm/logger/index.js",
+				"require": "./dist/cjs/logger/index.cjs"
+			}
+		},
+		"./exceptions": {
+			"types": "./dist/types/src/exceptions/index.d.ts",
+			"node": {
+				"import": "./dist/esm/exceptions/index.js",
+				"require": "./dist/cjs/exceptions/index.cjs"
+			},
+			"default": "./dist/browser/exceptions/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"typesVersions": {
+		"*": {
+			"*": [
+				"dist/types/*"
+			],
+			"beans": [
+				"dist/types/src/beans/index.d.ts"
+			],
+			"types": [
+				"dist/types/src/types/index.d.ts"
+			],
+			"utils": [
+				"dist/types/src/utils/index.d.ts"
+			],
+			"utils/date": [
+				"dist/types/src/utils/date/index.d.ts"
+			],
+			"exceptions": [
+				"dist/types/src/exceptions/index.d.ts"
+			],
+			"logger": [
+				"dist/types/src/logger/index.d.ts"
+			]
+		}
+	},
+	"directories": {
+		"lib": "./dist"
+	},
+	"engines": {
+		"node": ">=14"
+	},
+	"dependencies": {
+		"@date-fns/tz": "^1.1.2",
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.14.1",
+		"date-fns": "^4.1.0",
+		"tslib": "^2.8.1",
+		"winston": "^3.17.0"
+	},
+	"devDependencies": {
+		"@rollup/plugin-commonjs": "^28.0.3",
+		"@rollup/plugin-node-resolve": "^16.0.1",
+		"@rollup/plugin-typescript": "^12.1.2",
+		"@types/node": "^22.7.0",
+		"@typescript-eslint/eslint-plugin": "^8.33.1",
+		"@typescript-eslint/parser": "^8.33.1",
+		"esbuild-plugin-eslint": "^0.3.7",
+		"eslint": "^9.28.0",
+		"eslint-config-prettier": "^10.1.5",
+		"eslint-import-resolver-typescript": "^3.7.0",
+		"glob": "^11.0.2",
+		"rollup": "^4.40.2",
+		"rollup-plugin-dts": "^6.2.1",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.6.2"
+	}
 }
