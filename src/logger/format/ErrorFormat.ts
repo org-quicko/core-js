@@ -38,7 +38,8 @@ import { TransformableInfo } from "logform";
 export const ErrorFormat = winston.format((info: TransformableInfo) => {
   // If the log entry itself is an error
   if (info instanceof Error) {
-    const serialized = deepSerialize(info);
+    const seen = new WeakSet<object>();
+    const serialized = deepSerialize(info, seen);
 
     // Preserve Winston semantics by setting standard error properties
     info.message = serialized.message;
@@ -56,13 +57,13 @@ export const ErrorFormat = winston.format((info: TransformableInfo) => {
   }
 
   // For normal log entries, serialize any nested error fields
+  const seen = new WeakSet<object>();
   for (const key of Object.keys(info)) {
-    info[key] = deepSerialize(info[key]);
+    info[key] = deepSerialize(info[key], seen);
   }
 
   return info;
 });
-
 
 /**
  * Recursively serializes values that may contain Error objects.
@@ -70,32 +71,46 @@ export const ErrorFormat = winston.format((info: TransformableInfo) => {
  * @description
  * Handles all types of values including Error instances, nested objects, arrays,
  * and primitives. Ensures that Error objects are fully serialized with their
- * stack traces, messages, and cause chains preserved.
+ * stack traces, messages, and cause chains preserved. Includes circular reference
+ * detection to prevent infinite recursion.
  *
  * @param {any} value - The value to serialize. Can be any type (Error, object, array, primitive)
+ * @param {WeakSet<object>} seen - Set tracking objects already visited to detect circular references
  * @returns {any} The serialized value with all Error objects converted to plain objects
  *
  * @example
  * ```typescript
  * const error = new Error("Test");
- * const serialized = deepSerialize(error);
+ * const seen = new WeakSet<object>();
+ * const serialized = deepSerialize(error, seen);
  * // Returns: { message: "Test", name: "Error", stack: "...", cause: undefined }
  * ```
  */
-function deepSerialize(value: any): any {
+function deepSerialize(value: any, seen: WeakSet<object> = new WeakSet<object>()): any {
+  // Handle null/undefined
+  if (value == null) {
+    return value;
+  }
+
   // 1. Direct Error instance - convert to serializable object
   if (value instanceof Error) {
+    // Check for circular reference
+    if (seen.has(value)) {
+      return "[Circular Reference]";
+    }
+    seen.add(value);
+
     const serialized: any = {
       message: value.message,
       name: value.name,
       stack: value.stack,
-      cause: value.cause instanceof Error ? deepSerialize(value.cause) : value.cause,
+      cause: value.cause instanceof Error ? deepSerialize(value.cause, seen) : value.cause,
     };
 
     // Copy enumerable custom properties (e.g., error.code, error.statusCode)
     for (const key of Object.keys(value)) {
       if (!(key in serialized)) {
-        serialized[key] = deepSerialize(value[key]);
+        serialized[key] = deepSerialize(value[key], seen);
       }
     }
 
@@ -104,14 +119,25 @@ function deepSerialize(value: any): any {
 
   // 2. Array - recursively serialize each element
   if (Array.isArray(value)) {
-    return value.map((v) => deepSerialize(v));
+    // Check for circular reference
+    if (seen.has(value)) {
+      return "[Circular Reference]";
+    }
+    seen.add(value);
+    return value.map((v) => deepSerialize(v, seen));
   }
 
   // 3. Object - recursively serialize property values
-  if (value && typeof value === "object") {
+  if (typeof value === "object") {
+    // Check for circular reference
+    if (seen.has(value)) {
+      return "[Circular Reference]";
+    }
+    seen.add(value);
+
     const result: any = {};
     for (const key of Object.keys(value)) {
-      result[key] = deepSerialize(value[key]);
+      result[key] = deepSerialize(value[key], seen);
     }
     return result;
   }
