@@ -92,7 +92,7 @@ function deepSerialize(value: any, seen: WeakSet<object> = new WeakSet<object>()
     return value;
   }
 
-  // 1. Direct Error instance - convert to serializable object
+  // Error instance - convert to serializable object
   if (value instanceof Error) {
     // Check for circular reference
     if (seen.has(value)) {
@@ -117,30 +117,6 @@ function deepSerialize(value: any, seen: WeakSet<object> = new WeakSet<object>()
     return serialized;
   }
 
-  // 2. Array - recursively serialize each element
-  if (Array.isArray(value)) {
-    // Check for circular reference
-    if (seen.has(value)) {
-      return "[Circular Reference]";
-    }
-    seen.add(value);
-    return value.map((v) => deepSerialize(v, seen));
-  }
-
-  // 3. Object - recursively serialize property values
-  if (typeof value === "object") {
-    // Check for circular reference
-    if (seen.has(value)) {
-      return "[Circular Reference]";
-    }
-    seen.add(value);
-
-    const result: any = {};
-    for (const key of Object.keys(value)) {
-      result[key] = deepSerialize(value[key], seen);
-    }
-    return result;
-  }
 
   // 4. Primitive value - return as-is
   return value;
