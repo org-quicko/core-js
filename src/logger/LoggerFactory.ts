@@ -37,7 +37,7 @@ export class LoggerFactory {
    * @type {winston.Logger}
    * @private
    */
-  private static readonly logger: winston.Logger;
+  private static logger: winston.Logger;
 
   /**
    * Creates and initializes a new logger instance with the provided configuration.
@@ -80,7 +80,7 @@ export class LoggerFactory {
         winston.format.json()
       );
 
-      const logger = winston.createLogger({
+      LoggerFactory.logger = winston.createLogger({
         level: options?.level ?? LoggingLevel.info,
         format: options?.format
           ? winston.format.combine(options.format, defaultFormat)
@@ -91,7 +91,7 @@ export class LoggerFactory {
           : [new winston.transports.Console()],
       });
 
-      return logger;
+      return LoggerFactory.logger;
     } catch (error) {
       throw new BaseException(`Error creating logger`, error, 500);
     }

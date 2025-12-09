@@ -118,6 +118,6 @@ function deepSerialize(value: any, seen: WeakSet<object> = new WeakSet<object>()
   }
 
 
-  // 4. Primitive value - return as-is
+  // Primitive value - return as-is
   return value;
 }
