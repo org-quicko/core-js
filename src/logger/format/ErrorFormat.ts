@@ -39,7 +39,7 @@ export const ErrorFormat = winston.format((info: TransformableInfo) => {
   // If the log entry itself is an error
   if (info instanceof Error) {
     const seen = new WeakSet<object>();
-    const serialized = deepSerialize(info, seen);
+    const serialized = serialize(info, seen);
 
     // Preserve Winston semantics by setting standard error properties
     info.message = serialized.message;
@@ -59,7 +59,7 @@ export const ErrorFormat = winston.format((info: TransformableInfo) => {
   // For normal log entries, serialize any nested error fields
   const seen = new WeakSet<object>();
   for (const key of Object.keys(info)) {
-    info[key] = deepSerialize(info[key], seen);
+    info[key] = serialize(info[key], seen);
   }
 
   return info;
@@ -82,11 +82,11 @@ export const ErrorFormat = winston.format((info: TransformableInfo) => {
  * ```typescript
  * const error = new Error("Test");
  * const seen = new WeakSet<object>();
- * const serialized = deepSerialize(error, seen);
+ * const serialized = serialize(error, seen);
  * // Returns: { message: "Test", name: "Error", stack: "...", cause: undefined }
  * ```
  */
-function deepSerialize(value: any, seen: WeakSet<object> = new WeakSet<object>()): any {
+function serialize(value: any, seen: WeakSet<object> = new WeakSet<object>()): any {
   // Handle null/undefined
   if (value == null) {
     return value;
@@ -104,13 +104,13 @@ function deepSerialize(value: any, seen: WeakSet<object> = new WeakSet<object>()
       message: value.message,
       name: value.name,
       stack: value.stack,
-      cause: value.cause instanceof Error ? deepSerialize(value.cause, seen) : value.cause,
+      cause: value.cause instanceof Error ? serialize(value.cause, seen) : value.cause,
     };
 
     // Copy enumerable custom properties (e.g., error.code, error.statusCode)
     for (const key of Object.keys(value)) {
       if (!(key in serialized)) {
-        serialized[key] = deepSerialize(value[key], seen);
+        serialized[key] = serialize(value[key], seen);
       }
     }
 
