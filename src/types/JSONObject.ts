@@ -112,9 +112,9 @@ export class JSONArray extends Array<JSONValue> {
     constructor(array?: Array<JSONValue>) {
         super();
         if (array) {
-            for (let item of Object.values(array)) {
-                // Handle undefined BEFORE JSON.parse to prevent crash
-                // JSON.stringify(undefined) returns "undefined" which is not valid JSON
+            for (let i = 0; i < array.length; i++) {
+                let item = array[i];
+
                 if (item === undefined) {
                     this.push(undefined);
                     continue;
