@@ -11,7 +11,6 @@ export type JSONValue =
 
 export class JSONObject extends Map<string, JSONValue> {
 
-
     constructor(object?: { [x: string]: JSONValue }) {
         super()
         if (object) {
@@ -27,8 +26,6 @@ export class JSONObject extends Map<string, JSONValue> {
                 }
             }
         }
-
-
     }
 
     getJSONObject(key: string): JSONObject {
@@ -116,6 +113,13 @@ export class JSONArray extends Array<JSONValue> {
         super();
         if (array) {
             for (let item of Object.values(array)) {
+                // Handle undefined BEFORE JSON.parse to prevent crash
+                // JSON.stringify(undefined) returns "undefined" which is not valid JSON
+                if (item === undefined) {
+                    this.push(null);
+                    continue;
+                }
+                
                 item = JSON.parse(JSON.stringify(item))
 
                 if (item == null) {
