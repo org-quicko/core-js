@@ -116,10 +116,10 @@ export class JSONArray extends Array<JSONValue> {
                 // Handle undefined BEFORE JSON.parse to prevent crash
                 // JSON.stringify(undefined) returns "undefined" which is not valid JSON
                 if (item === undefined) {
-                    this.push(null);
+                    this.push(undefined);
                     continue;
                 }
-                
+
                 item = JSON.parse(JSON.stringify(item))
 
                 if (item == null) {
