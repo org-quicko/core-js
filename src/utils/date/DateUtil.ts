@@ -1,5 +1,5 @@
 import { TZDate } from '@date-fns/tz';
-import { add, compareAsc, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarYears, Duration, endOfDay, format, isLeapYear, isValid, parse, startOfDay } from 'date-fns';
+import { add, compareAsc, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarYears, differenceInHours, differenceInSeconds, Duration, endOfDay, format, isLeapYear, isValid, parse, startOfDay } from 'date-fns';
 import { IllegalArgumentException } from '../../exceptions';
 
 /**
@@ -139,6 +139,34 @@ export class DateUtil {
         const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
         const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
         return Math.abs(differenceInCalendarYears(first, second));
+    }
+
+    /**
+     * Calculates the absolute number of hours between two dates or timestamps.
+     * @param firstDate The first date or timestamp.
+     * @param secondDate The second date or timestamp.
+     * @returns The number of hours between the two dates.
+     */
+    static hoursInBetween(firstDate: Date, secondDate: Date): number;
+    static hoursInBetween(firstDate: number, secondDate: number): number;
+    static hoursInBetween(firstDate: Date | number, secondDate: Date | number): number {
+        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
+        return Math.abs(differenceInHours(first, second));
+    }
+
+    /**
+     * Calculates the absolute number of seconds between two dates or timestamps.
+     * @param firstDate The first date or timestamp.
+     * @param secondDate The second date or timestamp.
+     * @returns The number of seconds between the two dates.
+     */
+    static secondsInBetween(firstDate: Date, secondDate: Date): number;
+    static secondsInBetween(firstDate: number, secondDate: number): number;
+    static secondsInBetween(firstDate: Date | number, secondDate: Date | number): number {
+        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
+        return Math.abs(differenceInSeconds(first, second));
     }
 
     /**

@@ -127,6 +127,66 @@ describe("DateUtil", () => {
 		});
 	});
 
+	describe("hoursInBetween()", () => {
+		it("should return correct number of hours between dates", () => {
+			const date1 = new Date("2023-10-01T00:00:00Z");
+			const date2 = new Date("2023-10-01T12:00:00Z");
+			const hours = DateUtil.hoursInBetween(date1, date2);
+			expect(hours).toBe(12);
+		});
+
+		it("should return absolute value when first date is later", () => {
+			const date1 = new Date("2023-10-01T18:00:00Z");
+			const date2 = new Date("2023-10-01T06:00:00Z");
+			const hours = DateUtil.hoursInBetween(date1, date2);
+			expect(hours).toBe(12);
+		});
+
+		it("should return 0 for same timestamps", () => {
+			const date1 = new Date("2023-10-01T12:00:00Z");
+			const date2 = new Date("2023-10-01T12:00:00Z");
+			const hours = DateUtil.hoursInBetween(date1, date2);
+			expect(hours).toBe(0);
+		});
+
+		it("should work with timestamps (numbers)", () => {
+			const date1 = new Date("2023-10-01T00:00:00Z").getTime();
+			const date2 = new Date("2023-10-01T06:00:00Z").getTime();
+			const hours = DateUtil.hoursInBetween(date1, date2);
+			expect(hours).toBe(6);
+		});
+	});
+
+	describe("secondsInBetween()", () => {
+		it("should return correct number of seconds between dates", () => {
+			const date1 = new Date("2023-10-01T00:00:00Z");
+			const date2 = new Date("2023-10-01T00:01:30Z");
+			const seconds = DateUtil.secondsInBetween(date1, date2);
+			expect(seconds).toBe(90);
+		});
+
+		it("should return absolute value when first date is later", () => {
+			const date1 = new Date("2023-10-01T00:02:00Z");
+			const date2 = new Date("2023-10-01T00:00:00Z");
+			const seconds = DateUtil.secondsInBetween(date1, date2);
+			expect(seconds).toBe(120);
+		});
+
+		it("should return 0 for same timestamps", () => {
+			const date1 = new Date("2023-10-01T12:00:00Z");
+			const date2 = new Date("2023-10-01T12:00:00Z");
+			const seconds = DateUtil.secondsInBetween(date1, date2);
+			expect(seconds).toBe(0);
+		});
+
+		it("should work with timestamps (numbers)", () => {
+			const date1 = new Date("2023-10-01T00:00:00Z").getTime();
+			const date2 = new Date("2023-10-01T00:00:45Z").getTime();
+			const seconds = DateUtil.secondsInBetween(date1, date2);
+			expect(seconds).toBe(45);
+		});
+	});
+
 	describe("compareDates()", () => {
 		it("should return -1 if first date is earlier", () => {
 			const date1 = new Date("2023-10-01T00:00:00Z");
