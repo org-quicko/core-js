@@ -25,7 +25,13 @@
         },
         "id": {
           "type": "string"
-        },        
+        }, 
+        "description": {
+          "type": "string"
+        }, 
+        "type": {
+          "type": "string"
+        }, 
         "created_at": {
           "type": "string"
         },
