@@ -103,42 +103,60 @@ export class DateUtil {
      * Calculates the absolute number of days between two dates or timestamps.
      * @param firstDate The first date or timestamp.
      * @param secondDate The second date or timestamp.
+     * @param timeZone Optional IANA time zone identifier used for calendar comparisons.
      * @returns Number of days between the two dates.
      */
-    static daysInBetween(firstDate: Date, secondDate: Date): number;
-    static daysInBetween(firstDate: number, secondDate: number): number;
-    static daysInBetween(firstDate: Date | number, secondDate: Date | number): number {
+    static daysInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
+    static daysInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
+    static daysInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
         const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
         const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
-        return Math.abs(differenceInCalendarDays(first, second));
+        return Math.abs(
+            differenceInCalendarDays(
+                timeZone ? new TZDate(first, timeZone) : first,
+                timeZone ? new TZDate(second, timeZone) : second,
+            )
+        );
     }
 
     /**
  * Calculates the absolute number of months between two dates or timestamps.
  * @param firstDate The first date or timestamp.
  * @param secondDate The second date or timestamp.
+ * @param timeZone Optional IANA time zone identifier used for calendar comparisons.
  * @returns The number of months between the two dates.
  */
-    static monthsInBetween(firstDate: Date, secondDate: Date): number;
-    static monthsInBetween(firstDate: number, secondDate: number): number;
-    static monthsInBetween(firstDate: Date | number, secondDate: Date | number): number {
+    static monthsInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
+    static monthsInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
+    static monthsInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
         const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
         const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
-        return Math.abs(differenceInCalendarMonths(first, second));
+        return Math.abs(
+            differenceInCalendarMonths(
+                timeZone ? new TZDate(first, timeZone) : first,
+                timeZone ? new TZDate(second, timeZone) : second,
+            )
+        );
     }
 
     /**
      * Calculates the absolute number of years between two dates or timestamps.
      * @param firstDate The first date or timestamp.
      * @param secondDate The second date or timestamp.
+     * @param timeZone Optional IANA time zone identifier used for calendar comparisons.
      * @returns The number of years between the two dates.
      */
-    static yearsInBetween(firstDate: Date, secondDate: Date): number;
-    static yearsInBetween(firstDate: number, secondDate: number): number;
-    static yearsInBetween(firstDate: Date | number, secondDate: Date | number): number {
+    static yearsInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
+    static yearsInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
+    static yearsInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
         const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
         const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
-        return Math.abs(differenceInCalendarYears(first, second));
+        return Math.abs(
+            differenceInCalendarYears(
+                timeZone ? new TZDate(first, timeZone) : first,
+                timeZone ? new TZDate(second, timeZone) : second,
+            )
+        );
     }
 
     /**
