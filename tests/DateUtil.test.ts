@@ -215,8 +215,8 @@ describe("DateUtil", () => {
 		it("should add duration to date correctly", () => {
 			const date = new Date("2023-10-05T00:00:00Z");
 			const duration: Duration = { days: 5, months: 1, years: 0 };
-			const newDate = DateUtil.addDuration(date, duration);
-			expect(newDate.toISOString()).toBe("2023-11-10T00:00:00.000Z");
+			const newDate = DateUtil.addDuration(date, duration, TIMEZONE_UTC);
+			expect(newDate.getTime()).toBe(new Date("2023-11-10T00:00:00.000Z").getTime());
 		});
 
 		it("should clamp a 29th anchor to Feb 28 in a non-leap year when using IST calendar arithmetic", () => {
