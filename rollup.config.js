@@ -10,7 +10,6 @@ const EXTENSIONS = [".js", ".ts"];
 const environmentConfig = {
   nodeOnly: ["logger"],
   browserOnly: [],
-  universal: ["beans", "exceptions", "types", "utils"],
 };
 
 const getAllSourceModules = () => {
@@ -34,8 +33,6 @@ const getModulesForEnvironment = (environment = "node") => {
         return !isBrowserOnly;
       case "browser":
         return !isNodeOnly;
-      case "universal":
-        return !isNodeOnly && !isBrowserOnly;
       default:
         return true;
     }

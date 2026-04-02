@@ -81,9 +81,6 @@
 	"directories": {
 		"lib": "./dist"
 	},
-	"engines": {
-		"node": ">=14"
-	},
 	"dependencies": {
 		"@date-fns/tz": "^1.1.2",
 		"class-transformer": "^0.5.1",
