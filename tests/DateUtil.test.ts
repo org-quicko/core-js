@@ -108,6 +108,13 @@ describe("DateUtil", () => {
 			const days = DateUtil.daysInBetween(date1, date2);
 			expect(days).toBe(4);
 		});
+
+		it("should use the provided timezone for calendar day boundaries", () => {
+			const date1 = new Date("2023-10-01T18:30:00.000Z"); // 02 Oct 2023 00:00:00 IST
+			const date2 = new Date("2023-10-02T17:29:00.000Z"); // 02 Oct 2023 22:59:00 IST
+			const days = DateUtil.daysInBetween(date1, date2, TIMEZONE_IST);
+			expect(days).toBe(0);
+		});
 	});
 
 	describe("monthsInBetween()", () => {
@@ -117,6 +124,13 @@ describe("DateUtil", () => {
 			const months = DateUtil.monthsInBetween(date1, date2);
 			expect(months).toBe(3);
 		});
+
+		it("should use the provided timezone for calendar month boundaries", () => {
+			const date1 = new Date("2023-01-31T18:30:00.000Z"); // 01 Feb 2023 00:00:00 IST
+			const date2 = new Date("2023-02-28T17:29:00.000Z"); // 28 Feb 2023 22:59:00 IST
+			const months = DateUtil.monthsInBetween(date1, date2, TIMEZONE_IST);
+			expect(months).toBe(0);
+		});
 	});
 
 	describe("yearsInBetween()", () => {
@@ -125,6 +139,13 @@ describe("DateUtil", () => {
 			const date2 = new Date("2023-01-01T00:00:00Z");
 			const years = DateUtil.yearsInBetween(date1, date2);
 			expect(years).toBe(3);
+		});
+
+		it("should use the provided timezone for calendar year boundaries", () => {
+			const date1 = new Date("2023-12-31T18:30:00.000Z"); // 01 Jan 2024 00:00:00 IST
+			const date2 = new Date("2024-12-31T17:29:00.000Z"); // 31 Dec 2024 22:59:00 IST
+			const years = DateUtil.yearsInBetween(date1, date2, TIMEZONE_IST);
+			expect(years).toBe(0);
 		});
 	});
 
