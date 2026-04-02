@@ -6,6 +6,7 @@ import { DateUtil } from "../src/utils/date";
 describe("DateUtil", () => {
 
 	const TIMEZONE_UTC = "UTC";
+	const TIMEZONE_IST = "Asia/Kolkata";
 	describe("now()", () => {
 		it("should return the current date in UTC timezone", () => {
 			const now = DateUtil.now(TIMEZONE_UTC);
@@ -216,6 +217,78 @@ describe("DateUtil", () => {
 			const duration: Duration = { days: 5, months: 1, years: 0 };
 			const newDate = DateUtil.addDuration(date, duration);
 			expect(newDate.toISOString()).toBe("2023-11-10T00:00:00.000Z");
+		});
+
+		it("should clamp a 29th anchor to Feb 28 in a non-leap year when using IST calendar arithmetic", () => {
+			const date = new Date("2026-01-28T18:30:00.000Z"); // 29 Jan 2026 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2026-02-28 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should preserve a 29th anchor in leap-year February when using IST calendar arithmetic", () => {
+			const date = new Date("2024-01-28T18:30:00.000Z"); // 29 Jan 2024 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2024-02-29 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should add month duration in IST without spilling into the next day at month end", () => {
+			const date = new Date("2026-01-29T18:30:00.000Z"); // 30 Jan 2026 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2026-02-28 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should clamp a 30th anchor to Feb 29 in a leap year when using IST calendar arithmetic", () => {
+			const date = new Date("2024-01-29T18:30:00.000Z"); // 30 Jan 2024 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2024-02-29 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should keep 31st-anchored month arithmetic aligned to IST calendar boundaries", () => {
+			const date = new Date("2025-10-30T18:30:00.000Z"); // 31 Oct 2025 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2025-11-30 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should clamp a 31st anchor to Feb 28 in a non-leap year when using IST calendar arithmetic", () => {
+			const date = new Date("2026-01-30T18:30:00.000Z"); // 31 Jan 2026 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2026-02-28 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should clamp a 31st anchor to Feb 29 in a leap year when using IST calendar arithmetic", () => {
+			const date = new Date("2024-01-30T18:30:00.000Z"); // 31 Jan 2024 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2024-02-29 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should preserve a Feb 28 anchor when moving into March in a non-leap year", () => {
+			const date = new Date("2025-02-27T18:30:00.000Z"); // 28 Feb 2025 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2025-03-28 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should preserve a Feb 29 anchor when moving into March in a leap year", () => {
+			const date = new Date("2024-02-28T18:30:00.000Z"); // 29 Feb 2024 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2024-03-29 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
 		});
 	});
 

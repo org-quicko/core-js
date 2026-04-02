@@ -186,15 +186,19 @@ export class DateUtil {
 
     /**
      * Adds a duration (e.g., days, months, years) to a given date or timestamp.
+     * When a time zone is provided, the duration is applied using calendar arithmetic
+     * in that time zone so month-end or day-boundary business rules stay aligned locally.
+     *
      * @param date The base date or timestamp to which the duration will be added.
      * @param duration An object specifying the duration (e.g., `{ days: 1, months: 2 }`).
+     * @param timeZone Optional IANA time zone identifier used for calendar math.
      * @returns A new Date object with the duration added.
      */
-    static addDuration(date: Date, duration: Duration): Date;
-    static addDuration(date: number, duration: Duration): Date;
-    static addDuration(date: Date | number, duration: Duration): Date {
+    static addDuration(date: Date, duration: Duration, timeZone?: string): Date;
+    static addDuration(date: number, duration: Duration, timeZone?: string): Date;
+    static addDuration(date: Date | number, duration: Duration, timeZone?: string): Date {
         const normalizedDate = typeof date === 'number' ? new Date(date) : date;
-        return add(normalizedDate, duration);
+        return add(timeZone ? new TZDate(normalizedDate, timeZone) : normalizedDate, duration);
     }
 
     /**
