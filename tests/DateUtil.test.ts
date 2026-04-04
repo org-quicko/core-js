@@ -1,7 +1,7 @@
-import { describe } from "@jest/globals";
 import { Duration } from "date-fns";
 import { IllegalArgumentException } from "../src/exceptions";
 import { DateUtil } from "../src/utils/date";
+import { describe, it, expect } from "@jest/globals";
 
 describe("DateUtil", () => {
 
@@ -109,6 +109,13 @@ describe("DateUtil", () => {
 			expect(days).toBe(4);
 		});
 
+		it("should default to UTC calendar boundaries when timezone is omitted", () => {
+			const date1 = new Date("2023-10-01T18:30:00.000Z");
+			const date2 = new Date("2023-10-02T17:29:00.000Z");
+			const days = DateUtil.daysInBetween(date1, date2);
+			expect(days).toBe(1);
+		});
+
 		it("should use the provided timezone for calendar day boundaries", () => {
 			const date1 = new Date("2023-10-01T18:30:00.000Z"); // 02 Oct 2023 00:00:00 IST
 			const date2 = new Date("2023-10-02T17:29:00.000Z"); // 02 Oct 2023 22:59:00 IST
@@ -125,6 +132,13 @@ describe("DateUtil", () => {
 			expect(months).toBe(3);
 		});
 
+		it("should default to UTC calendar boundaries when timezone is omitted", () => {
+			const date1 = new Date("2023-01-31T23:30:00.000Z");
+			const date2 = new Date("2023-02-28T22:29:00.000Z");
+			const months = DateUtil.monthsInBetween(date1, date2);
+			expect(months).toBe(1);
+		});
+
 		it("should use the provided timezone for calendar month boundaries", () => {
 			const date1 = new Date("2023-01-31T18:30:00.000Z"); // 01 Feb 2023 00:00:00 IST
 			const date2 = new Date("2023-02-28T17:29:00.000Z"); // 28 Feb 2023 22:59:00 IST
@@ -139,6 +153,13 @@ describe("DateUtil", () => {
 			const date2 = new Date("2023-01-01T00:00:00Z");
 			const years = DateUtil.yearsInBetween(date1, date2);
 			expect(years).toBe(3);
+		});
+
+		it("should default to UTC calendar boundaries when timezone is omitted", () => {
+			const date1 = new Date("2023-12-31T23:30:00.000Z");
+			const date2 = new Date("2024-12-31T22:29:00.000Z");
+			const years = DateUtil.yearsInBetween(date1, date2);
+			expect(years).toBe(1);
 		});
 
 		it("should use the provided timezone for calendar year boundaries", () => {
@@ -238,6 +259,12 @@ describe("DateUtil", () => {
 			const duration: Duration = { days: 5, months: 1, years: 0 };
 			const newDate = DateUtil.addDuration(date, duration, TIMEZONE_UTC);
 			expect(newDate.getTime()).toBe(new Date("2023-11-10T00:00:00.000Z").getTime());
+		});
+
+		it("should default to UTC calendar arithmetic when timezone is omitted", () => {
+			const date = new Date("2026-01-30T00:00:00.000Z"); // 30 Jan 2026 00:00:00 UTC
+			const newDate = DateUtil.addDuration(date, { months: 1 });
+			expect(DateUtil.printDate(newDate, TIMEZONE_UTC, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2026-02-28 00:00:00.000");
 		});
 
 		it("should clamp a 29th anchor to Feb 28 in a non-leap year when using IST calendar arithmetic", () => {
