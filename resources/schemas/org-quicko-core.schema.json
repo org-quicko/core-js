@@ -1,15 +1,19 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "@org-quicko/core",
-  "metadata": {
-    "x-typescript-package": "@org-quicko/core"
-  },
+  "$defs": {},
   "definitions": {
     "SortOrder": {
       "type": "string",
       "enum": [
-        "asc",
-        "desc"
+        {
+          "key": "asc",
+          "value": "asc"
+        },
+        {
+          "key": "desc",
+          "value": "desc"
+        }
       ],
       "title": "SortOrder"
     },
@@ -19,8 +23,8 @@
       "properties": {
         "@entity": {
           "type": "string",
-          "description": "Type discriminator for this entity",
           "default": "org.quicko.base_object",
+          "description": "Type discriminator for this entity",
           "const": "org.quicko.base_object"
         },
         "id": {
@@ -41,6 +45,9 @@
         "@entity"
       ]
     }
+  },
+  "metadata": {
+    "x-typescript-package": "@org-quicko/core"
   },
   "oneOf": [
     {
