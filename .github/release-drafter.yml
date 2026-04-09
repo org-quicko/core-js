@@ -7,13 +7,64 @@ version-resolver:
   minor:
     labels:
       - minor
+      - feat
+      - add
   patch:
     labels:
       - patch
+      - fix
+      - perf
+      - ref
+      - chore
+      - cln
+      - lint
+      - rem
+      - mov
+      - rev
+      - merge
   default: patch
+categories:
+  - title: 'Features'
+    labels:
+      - feat
+      - add
+      - feature
+      - enhancement
+  - title: 'Fixes'
+    labels:
+      - fix
+      - bug
+      - bugfix
+  - title: 'Performance'
+    labels:
+      - perf
+  - title: 'Refactors & Cleanup'
+    labels:
+      - ref
+      - cln
+      - mov
+      - rem
+      - rev
+  - title: 'Maintenance'
+    labels:
+      - chore
+      - lint
+      - merge
+      - ci
+      - build
+      - test
+      - docs
+      - deps
+      - dependencies
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
+exclude-labels:
+  - skip-changelog
 template: |
-  ## Changes
+  ## Summary
 
   $CHANGES
+
+  ## Contributors
+
+  $CONTRIBUTORS
