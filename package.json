@@ -9,7 +9,7 @@
 	"types": "dist/types/index.d.ts",
 	"type": "module",
 	"scripts": {
-		"clean": "rm -rf dist && npm cache clean --force",
+		"clean": "rm -rf ./node_modules ./package-lock.json ./dist && npm cache clean --force",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"prebuild": "npm run clean && npm run lint",
