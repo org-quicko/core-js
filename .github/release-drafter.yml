@@ -1,28 +1,3 @@
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
-version-resolver:
-  major:
-    labels:
-      - major
-  minor:
-    labels:
-      - minor
-      - feat
-      - add
-  patch:
-    labels:
-      - patch
-      - fix
-      - perf
-      - ref
-      - chore
-      - cln
-      - lint
-      - rem
-      - mov
-      - rev
-      - merge
-  default: patch
 categories:
   - title: 'Features'
     labels:
