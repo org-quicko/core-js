@@ -15,6 +15,8 @@ This repository uses GitHub Actions to separate pull request validation, release
 - Pull requests run install, date util tests, and build validation.
 - Pushes to `main` update the next draft release using Release Drafter.
 - Publishing happens only when a GitHub release is published.
+- PR titles are used directly in the drafted release notes, so keep them clear and specific.
+- PR labels influence both release note grouping and version bump resolution.
 
 ### Publishing A New Version
 

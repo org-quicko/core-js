@@ -43,8 +43,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run date util tests
-        run: npm run test:date:util
+      - name: Run tests
+        run: npm test
 
       - name: Build package
         run: npm run build
