@@ -1,11 +1,12 @@
-import { describe } from "@jest/globals";
 import { Duration } from "date-fns";
 import { IllegalArgumentException } from "../src/exceptions";
 import { DateUtil } from "../src/utils/date";
+import { describe, it, expect } from "@jest/globals";
 
 describe("DateUtil", () => {
 
 	const TIMEZONE_UTC = "UTC";
+	const TIMEZONE_IST = "Asia/Kolkata";
 	describe("now()", () => {
 		it("should return the current date in UTC timezone", () => {
 			const now = DateUtil.now(TIMEZONE_UTC);
@@ -107,6 +108,20 @@ describe("DateUtil", () => {
 			const days = DateUtil.daysInBetween(date1, date2);
 			expect(days).toBe(4);
 		});
+
+		it("should default to UTC calendar boundaries when timezone is omitted", () => {
+			const date1 = new Date("2023-10-01T18:30:00.000Z");
+			const date2 = new Date("2023-10-02T17:29:00.000Z");
+			const days = DateUtil.daysInBetween(date1, date2);
+			expect(days).toBe(1);
+		});
+
+		it("should use the provided timezone for calendar day boundaries", () => {
+			const date1 = new Date("2023-10-01T18:30:00.000Z"); // 02 Oct 2023 00:00:00 IST
+			const date2 = new Date("2023-10-02T17:29:00.000Z"); // 02 Oct 2023 22:59:00 IST
+			const days = DateUtil.daysInBetween(date1, date2, TIMEZONE_IST);
+			expect(days).toBe(0);
+		});
 	});
 
 	describe("monthsInBetween()", () => {
@@ -116,6 +131,20 @@ describe("DateUtil", () => {
 			const months = DateUtil.monthsInBetween(date1, date2);
 			expect(months).toBe(3);
 		});
+
+		it("should default to UTC calendar boundaries when timezone is omitted", () => {
+			const date1 = new Date("2023-01-31T23:30:00.000Z");
+			const date2 = new Date("2023-02-28T22:29:00.000Z");
+			const months = DateUtil.monthsInBetween(date1, date2);
+			expect(months).toBe(1);
+		});
+
+		it("should use the provided timezone for calendar month boundaries", () => {
+			const date1 = new Date("2023-01-31T18:30:00.000Z"); // 01 Feb 2023 00:00:00 IST
+			const date2 = new Date("2023-02-28T17:29:00.000Z"); // 28 Feb 2023 22:59:00 IST
+			const months = DateUtil.monthsInBetween(date1, date2, TIMEZONE_IST);
+			expect(months).toBe(0);
+		});
 	});
 
 	describe("yearsInBetween()", () => {
@@ -124,6 +153,20 @@ describe("DateUtil", () => {
 			const date2 = new Date("2023-01-01T00:00:00Z");
 			const years = DateUtil.yearsInBetween(date1, date2);
 			expect(years).toBe(3);
+		});
+
+		it("should default to UTC calendar boundaries when timezone is omitted", () => {
+			const date1 = new Date("2023-12-31T23:30:00.000Z");
+			const date2 = new Date("2024-12-31T22:29:00.000Z");
+			const years = DateUtil.yearsInBetween(date1, date2);
+			expect(years).toBe(1);
+		});
+
+		it("should use the provided timezone for calendar year boundaries", () => {
+			const date1 = new Date("2023-12-31T18:30:00.000Z"); // 01 Jan 2024 00:00:00 IST
+			const date2 = new Date("2024-12-31T17:29:00.000Z"); // 31 Dec 2024 22:59:00 IST
+			const years = DateUtil.yearsInBetween(date1, date2, TIMEZONE_IST);
+			expect(years).toBe(0);
 		});
 	});
 
@@ -214,8 +257,86 @@ describe("DateUtil", () => {
 		it("should add duration to date correctly", () => {
 			const date = new Date("2023-10-05T00:00:00Z");
 			const duration: Duration = { days: 5, months: 1, years: 0 };
-			const newDate = DateUtil.addDuration(date, duration);
-			expect(newDate.toISOString()).toBe("2023-11-10T00:00:00.000Z");
+			const newDate = DateUtil.addDuration(date, duration, TIMEZONE_UTC);
+			expect(newDate.getTime()).toBe(new Date("2023-11-10T00:00:00.000Z").getTime());
+		});
+
+		it("should default to UTC calendar arithmetic when timezone is omitted", () => {
+			const date = new Date("2026-01-30T00:00:00.000Z"); // 30 Jan 2026 00:00:00 UTC
+			const newDate = DateUtil.addDuration(date, { months: 1 });
+			expect(DateUtil.printDate(newDate, TIMEZONE_UTC, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2026-02-28 00:00:00.000");
+		});
+
+		it("should clamp a 29th anchor to Feb 28 in a non-leap year when using IST calendar arithmetic", () => {
+			const date = new Date("2026-01-28T18:30:00.000Z"); // 29 Jan 2026 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2026-02-28 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should preserve a 29th anchor in leap-year February when using IST calendar arithmetic", () => {
+			const date = new Date("2024-01-28T18:30:00.000Z"); // 29 Jan 2024 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2024-02-29 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should add month duration in IST without spilling into the next day at month end", () => {
+			const date = new Date("2026-01-29T18:30:00.000Z"); // 30 Jan 2026 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2026-02-28 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should clamp a 30th anchor to Feb 29 in a leap year when using IST calendar arithmetic", () => {
+			const date = new Date("2024-01-29T18:30:00.000Z"); // 30 Jan 2024 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2024-02-29 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should keep 31st-anchored month arithmetic aligned to IST calendar boundaries", () => {
+			const date = new Date("2025-10-30T18:30:00.000Z"); // 31 Oct 2025 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2025-11-30 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should clamp a 31st anchor to Feb 28 in a non-leap year when using IST calendar arithmetic", () => {
+			const date = new Date("2026-01-30T18:30:00.000Z"); // 31 Jan 2026 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2026-02-28 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should clamp a 31st anchor to Feb 29 in a leap year when using IST calendar arithmetic", () => {
+			const date = new Date("2024-01-30T18:30:00.000Z"); // 31 Jan 2024 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2024-02-29 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should preserve a Feb 28 anchor when moving into March in a non-leap year", () => {
+			const date = new Date("2025-02-27T18:30:00.000Z"); // 28 Feb 2025 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2025-03-28 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
+		});
+
+		it("should preserve a Feb 29 anchor when moving into March in a leap year", () => {
+			const date = new Date("2024-02-28T18:30:00.000Z"); // 29 Feb 2024 00:00:00 IST
+			const newDate = DateUtil.addDuration(date, { months: 1 }, TIMEZONE_IST);
+
+			expect(DateUtil.printDate(newDate, TIMEZONE_IST, "yyyy-MM-dd HH:mm:ss.SSS")).toBe("2024-03-29 00:00:00.000");
+			expect(DateUtil.getStartOfDay(newDate, TIMEZONE_IST).getTime()).toBe(newDate.getTime());
 		});
 	});
 

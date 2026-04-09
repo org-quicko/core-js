@@ -9,6 +9,7 @@ import { IllegalArgumentException } from '../../exceptions';
 export class DateUtil {
 
     static readonly ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+    static readonly TIMEZONE = "UTC"
 
     /**
      * Gets the current date and time in the specified time zone.
@@ -53,7 +54,7 @@ export class DateUtil {
     static printDate(date: Date, timeZone: string, dateFormat?: string): string;
     static printDate(date: number, timeZone: string, dateFormat?: string): string;
     static printDate(date: Date | number, timeZone: string, dateFormat: string = this.ISO_8601_FORMAT): string {
-        const normalizedDate = typeof date === 'number' ? new Date(date) : date;
+        const normalizedDate = typeof date === 'number' ? DateUtil.fromMillis(date) : date;
         return format(new TZDate(normalizedDate, timeZone), dateFormat);
     }
 
@@ -66,7 +67,7 @@ export class DateUtil {
     static getStartOfDay(date: Date, timeZone: string): Date;
     static getStartOfDay(date: number, timeZone: string): Date;
     static getStartOfDay(date: Date | number, timeZone: string): Date {
-        const normalizedDate = typeof date === 'number' ? new Date(date) : date;
+        const normalizedDate = typeof date === 'number' ? DateUtil.fromMillis(date) : date;
         return startOfDay(new TZDate(normalizedDate, timeZone));
     }
 
@@ -79,7 +80,7 @@ export class DateUtil {
     static getEndOfDay(date: Date, timeZone: string): Date;
     static getEndOfDay(date: number, timeZone: string): Date;
     static getEndOfDay(date: Date | number, timeZone: string): Date {
-        const normalizedDate = typeof date === 'number' ? new Date(date) : date;
+        const normalizedDate = typeof date === 'number' ? DateUtil.fromMillis(date) : date;
         return endOfDay(new TZDate(normalizedDate, timeZone));
     }
 
@@ -93,56 +94,87 @@ export class DateUtil {
         try {
             DateUtil.readDate(dateString, dateFormat, "UTC");
             return true;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return false;
         }
     }
 
     /**
-     * Calculates the absolute number of days between two dates or timestamps.
+     * Calculates the absolute number of calendar days between two dates or timestamps.
+     * Since day boundaries depend on a calendar, callers can optionally provide a time zone
+     * so the same pair of instants is interpreted consistently across machines.
+     *
      * @param firstDate The first date or timestamp.
      * @param secondDate The second date or timestamp.
+     * @param timeZone Optional IANA time zone identifier used for calendar comparisons.
      * @returns Number of days between the two dates.
      */
-    static daysInBetween(firstDate: Date, secondDate: Date): number;
-    static daysInBetween(firstDate: number, secondDate: number): number;
-    static daysInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
-        return Math.abs(differenceInCalendarDays(first, second));
+    static daysInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
+    static daysInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
+    static daysInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
+        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const effectiveTimeZone = timeZone || this.TIMEZONE;
+        return Math.abs(
+            differenceInCalendarDays(
+                new TZDate(first, effectiveTimeZone),
+                new TZDate(second, effectiveTimeZone),
+            )
+        );
     }
 
     /**
- * Calculates the absolute number of months between two dates or timestamps.
- * @param firstDate The first date or timestamp.
- * @param secondDate The second date or timestamp.
- * @returns The number of months between the two dates.
- */
-    static monthsInBetween(firstDate: Date, secondDate: Date): number;
-    static monthsInBetween(firstDate: number, secondDate: number): number;
-    static monthsInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
-        return Math.abs(differenceInCalendarMonths(first, second));
-    }
-
-    /**
-     * Calculates the absolute number of years between two dates or timestamps.
+     * Calculates the absolute number of calendar months between two dates or timestamps.
+     * Since month boundaries depend on a calendar, callers can optionally provide a time zone
+     * so the same pair of instants is interpreted consistently across machines.
+     *
      * @param firstDate The first date or timestamp.
      * @param secondDate The second date or timestamp.
-     * @returns The number of years between the two dates.
+     * @param timeZone Optional IANA time zone identifier used for calendar comparisons.
+     * @returns The number of months between the two dates.
      */
-    static yearsInBetween(firstDate: Date, secondDate: Date): number;
-    static yearsInBetween(firstDate: number, secondDate: number): number;
-    static yearsInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
-        return Math.abs(differenceInCalendarYears(first, second));
+    static monthsInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
+    static monthsInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
+    static monthsInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
+        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const effectiveTimeZone = timeZone || this.TIMEZONE;
+        return Math.abs(
+            differenceInCalendarMonths(
+                new TZDate(first, effectiveTimeZone),
+                new TZDate(second, effectiveTimeZone),
+            )
+        );
     }
 
     /**
-     * Calculates the absolute number of hours between two dates or timestamps.
+     * Calculates the absolute number of calendar years between two dates or timestamps.
+     * Since year boundaries depend on a calendar, callers can optionally provide a time zone
+     * so the same pair of instants is interpreted consistently across machines.
+     *
+     * @param firstDate The first date or timestamp.
+     * @param secondDate The second date or timestamp.
+     * @param timeZone Optional IANA time zone identifier used for calendar comparisons.
+     * @returns The number of years between the two dates.
+     */
+    static yearsInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
+    static yearsInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
+    static yearsInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
+        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const effectiveTimeZone = timeZone || this.TIMEZONE;
+        return Math.abs(
+            differenceInCalendarYears(
+                new TZDate(first, effectiveTimeZone),
+                new TZDate(second, effectiveTimeZone),
+            )
+        );
+    }
+
+    /**
+     * Calculates the absolute elapsed number of hours between two dates or timestamps.
+     * This is duration-based, not calendar-based, so it is independent of time zone.
+     *
      * @param firstDate The first date or timestamp.
      * @param secondDate The second date or timestamp.
      * @returns The number of hours between the two dates.
@@ -150,13 +182,15 @@ export class DateUtil {
     static hoursInBetween(firstDate: Date, secondDate: Date): number;
     static hoursInBetween(firstDate: number, secondDate: number): number;
     static hoursInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
+        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
         return Math.abs(differenceInHours(first, second));
     }
 
     /**
-     * Calculates the absolute number of seconds between two dates or timestamps.
+     * Calculates the absolute elapsed number of seconds between two dates or timestamps.
+     * This is duration-based, not calendar-based, so it is independent of time zone.
+     *
      * @param firstDate The first date or timestamp.
      * @param secondDate The second date or timestamp.
      * @returns The number of seconds between the two dates.
@@ -164,8 +198,8 @@ export class DateUtil {
     static secondsInBetween(firstDate: Date, secondDate: Date): number;
     static secondsInBetween(firstDate: number, secondDate: number): number;
     static secondsInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
+        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
         return Math.abs(differenceInSeconds(first, second));
     }
 
@@ -178,23 +212,28 @@ export class DateUtil {
     static compareDates(firstDate: Date, secondDate: Date): -1 | 0 | 1;
     static compareDates(firstDate: number, secondDate: number): -1 | 0 | 1;
     static compareDates(firstDate: Date | number, secondDate: Date | number): -1 | 0 | 1 {
-        const first = typeof firstDate === 'number' ? new Date(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? new Date(secondDate) : secondDate;
+        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
+        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
 
         return compareAsc(first, second) as -1 | 0 | 1;
     }
 
     /**
      * Adds a duration (e.g., days, months, years) to a given date or timestamp.
+     * When a time zone is provided, the duration is applied using calendar arithmetic
+     * in that time zone so month-end or day-boundary business rules stay aligned locally.
+     *
      * @param date The base date or timestamp to which the duration will be added.
      * @param duration An object specifying the duration (e.g., `{ days: 1, months: 2 }`).
+     * @param timeZone Optional IANA time zone identifier used for calendar math.
      * @returns A new Date object with the duration added.
      */
-    static addDuration(date: Date, duration: Duration): Date;
-    static addDuration(date: number, duration: Duration): Date;
-    static addDuration(date: Date | number, duration: Duration): Date {
-        const normalizedDate = typeof date === 'number' ? new Date(date) : date;
-        return add(normalizedDate, duration);
+    static addDuration(date: Date, duration: Duration, timeZone?: string): Date;
+    static addDuration(date: number, duration: Duration, timeZone?: string): Date;
+    static addDuration(date: Date | number, duration: Duration, timeZone?: string): Date {
+        const normalizedDate = typeof date === 'number' ? DateUtil.fromMillis(date) : date;
+        const effectiveTimeZone = timeZone || this.TIMEZONE;
+        return add(new TZDate(normalizedDate, effectiveTimeZone), duration);
     }
 
     /**

@@ -1,0 +1,45 @@
+categories:
+  - title: 'Features'
+    labels:
+      - feat
+      - add
+      - feature
+      - enhancement
+  - title: 'Fixes'
+    labels:
+      - fix
+      - bug
+      - bugfix
+  - title: 'Performance'
+    labels:
+      - perf
+  - title: 'Refactors & Cleanup'
+    labels:
+      - ref
+      - cln
+      - mov
+      - rem
+      - rev
+  - title: 'Maintenance'
+    labels:
+      - chore
+      - lint
+      - merge
+      - ci
+      - build
+      - test
+      - docs
+      - deps
+      - dependencies
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&'
+exclude-labels:
+  - skip-changelog
+template: |
+  ## Summary
+
+  $CHANGES
+
+  ## Contributors
+
+  $CONTRIBUTORS

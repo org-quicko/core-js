@@ -1,0 +1,38 @@
+name: Draft Or Update Next Release
+
+concurrency: draft_or_update_next_release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  prepare-release:
+    name: Draft Or Update Next Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Capture package version
+        shell: bash
+        run: |
+          PACKAGE_VERSION=$(node -p 'require("./package.json").version')
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
+
+      - name: Update release draft
+        uses: release-drafter/release-drafter@v6
+        with:
+          name: v${{ env.PACKAGE_VERSION }}
+          tag: v${{ env.PACKAGE_VERSION }}
+          version: ${{ env.PACKAGE_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
