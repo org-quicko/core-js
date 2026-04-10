@@ -54,7 +54,7 @@ export class DateUtil {
     static printDate(date: Date, timeZone: string, dateFormat?: string): string;
     static printDate(date: number, timeZone: string, dateFormat?: string): string;
     static printDate(date: Date | number, timeZone: string, dateFormat: string = this.ISO_8601_FORMAT): string {
-        const normalizedDate = typeof date === 'number' ? DateUtil.fromMillis(date) : date;
+        const normalizedDate = this.normalizeDate(date);
         return format(new TZDate(normalizedDate, timeZone), dateFormat);
     }
 
@@ -67,7 +67,7 @@ export class DateUtil {
     static getStartOfDay(date: Date, timeZone: string): Date;
     static getStartOfDay(date: number, timeZone: string): Date;
     static getStartOfDay(date: Date | number, timeZone: string): Date {
-        const normalizedDate = typeof date === 'number' ? DateUtil.fromMillis(date) : date;
+        const normalizedDate = this.normalizeDate(date);
         return startOfDay(new TZDate(normalizedDate, timeZone));
     }
 
@@ -80,7 +80,7 @@ export class DateUtil {
     static getEndOfDay(date: Date, timeZone: string): Date;
     static getEndOfDay(date: number, timeZone: string): Date;
     static getEndOfDay(date: Date | number, timeZone: string): Date {
-        const normalizedDate = typeof date === 'number' ? DateUtil.fromMillis(date) : date;
+        const normalizedDate = this.normalizeDate(date);
         return endOfDay(new TZDate(normalizedDate, timeZone));
     }
 
@@ -112,8 +112,8 @@ export class DateUtil {
     static daysInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
     static daysInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
     static daysInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
-        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const first = this.normalizeDate(firstDate);
+        const second = this.normalizeDate(secondDate);
         const effectiveTimeZone = timeZone || this.TIMEZONE;
         return Math.abs(
             differenceInCalendarDays(
@@ -136,8 +136,8 @@ export class DateUtil {
     static monthsInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
     static monthsInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
     static monthsInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
-        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const first = this.normalizeDate(firstDate);
+        const second = this.normalizeDate(secondDate);
         const effectiveTimeZone = timeZone || this.TIMEZONE;
         return Math.abs(
             differenceInCalendarMonths(
@@ -160,8 +160,8 @@ export class DateUtil {
     static yearsInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
     static yearsInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
     static yearsInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
-        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const first = this.normalizeDate(firstDate);
+        const second = this.normalizeDate(secondDate);
         const effectiveTimeZone = timeZone || this.TIMEZONE;
         return Math.abs(
             differenceInCalendarYears(
@@ -182,8 +182,8 @@ export class DateUtil {
     static hoursInBetween(firstDate: Date, secondDate: Date): number;
     static hoursInBetween(firstDate: number, secondDate: number): number;
     static hoursInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const first = this.normalizeDate(firstDate);
+        const second = this.normalizeDate(secondDate);
         return Math.abs(differenceInHours(first, second));
     }
 
@@ -198,8 +198,8 @@ export class DateUtil {
     static secondsInBetween(firstDate: Date, secondDate: Date): number;
     static secondsInBetween(firstDate: number, secondDate: number): number;
     static secondsInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const first = this.normalizeDate(firstDate);
+        const second = this.normalizeDate(secondDate);
         return Math.abs(differenceInSeconds(first, second));
     }
 
@@ -212,8 +212,8 @@ export class DateUtil {
     static compareDates(firstDate: Date, secondDate: Date): -1 | 0 | 1;
     static compareDates(firstDate: number, secondDate: number): -1 | 0 | 1;
     static compareDates(firstDate: Date | number, secondDate: Date | number): -1 | 0 | 1 {
-        const first = typeof firstDate === 'number' ? DateUtil.fromMillis(firstDate) : firstDate;
-        const second = typeof secondDate === 'number' ? DateUtil.fromMillis(secondDate) : secondDate;
+        const first = this.normalizeDate(firstDate);
+        const second = this.normalizeDate(secondDate);
 
         return compareAsc(first, second) as -1 | 0 | 1;
     }
@@ -231,7 +231,7 @@ export class DateUtil {
     static addDuration(date: Date, duration: Duration, timeZone?: string): Date;
     static addDuration(date: number, duration: Duration, timeZone?: string): Date;
     static addDuration(date: Date | number, duration: Duration, timeZone?: string): Date {
-        const normalizedDate = typeof date === 'number' ? DateUtil.fromMillis(date) : date;
+        const normalizedDate = this.normalizeDate(date);
         const effectiveTimeZone = timeZone || this.TIMEZONE;
         return add(new TZDate(normalizedDate, effectiveTimeZone), duration);
     }
@@ -253,6 +253,10 @@ export class DateUtil {
      */
     static fromMillis(milliseconds: number): Date {
         return new Date(milliseconds);
+    }
+
+    protected static normalizeDate(date: Date | number): Date {
+        return typeof date === 'number' ? this.fromMillis(date) : date;
     }
 
     /**
