@@ -3,6 +3,14 @@
 	"version": "2.0.6",
 	"description": "A library in typescript for common entities and utilities across Quicko",
 	"author": "Quicko",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/org-quicko/core-js"
+	},
+	"homepage": "https://github.com/org-quicko/core-js",
+	"bugs": {
+		"url": "https://github.com/org-quicko/core-js/issues"
+	},
 	"main": "dist/cjs/build/node/index.cjs",
 	"module": "dist/esm/build/node/index.js",
 	"browser": "dist/browser/build/browser/index.js",
