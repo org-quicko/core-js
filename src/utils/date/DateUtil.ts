@@ -1,5 +1,20 @@
 import { TZDate } from '@date-fns/tz';
-import { add, compareAsc, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarYears, differenceInHours, differenceInSeconds, Duration, endOfDay, format, isLeapYear, isValid, parse, startOfDay } from 'date-fns';
+import {
+    add,
+    compareAsc,
+    differenceInCalendarDays,
+    differenceInCalendarMonths,
+    differenceInCalendarYears,
+    differenceInHours,
+    differenceInSeconds,
+    Duration,
+    endOfDay,
+    format,
+    isLeapYear,
+    isValid,
+    parse,
+    startOfDay,
+} from 'date-fns';
 import { IllegalArgumentException } from '../../exceptions';
 
 /**
@@ -8,16 +23,28 @@ import { IllegalArgumentException } from '../../exceptions';
  */
 export class DateUtil {
 
-    static readonly ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-    static readonly TIMEZONE = "UTC"
+    static readonly ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSxxx";
+    static readonly DEFAULT_TIMEZONE = 'UTC';
+
+    protected static resolveTimeZone(timeZone?: string): string {
+        return timeZone || this.DEFAULT_TIMEZONE;
+    }
+
+    protected static normalizeDate(date: Date | number): Date {
+        return typeof date === 'number' ? new Date(date) : date;
+    }
+
+    protected static toTZDate(date: Date | number, timeZone?: string): TZDate {
+        return new TZDate(this.normalizeDate(date), this.resolveTimeZone(timeZone));
+    }
 
     /**
      * Gets the current date and time in the specified time zone.
-     * @param timeZone The IANA time zone identifier.
+     * @param timeZone The IANA time zone identifier (default: UTC).
      * @returns Current date and time in the specified time zone.
      */
-    static now(timeZone: string): Date {
-        return new TZDate(new Date(), timeZone);
+    static now(timeZone?: string): Date {
+        return new TZDate(new Date(), this.resolveTimeZone(timeZone));
     }
 
     /**
@@ -32,12 +59,12 @@ export class DateUtil {
      * Parses a date string into a Date object.
      * @param dateString The date string to parse.
      * @param dateFormat The format of the date string (default: ISO_8601_FORMAT).
-     * @param timeZone The IANA time zone identifier.
+     * @param timeZone The IANA time zone identifier (default: UTC).
      * @throws {IllegalArgumentException} If the date string is invalid.
      * @returns Parsed Date object.
      */
-    static readDate(dateString: string, dateFormat = this.ISO_8601_FORMAT, timeZone: string): Date {
-        const date = parse(dateString, dateFormat, TZDate.tz(timeZone));
+    static readDate(dateString: string, dateFormat: string = this.ISO_8601_FORMAT, timeZone?: string): Date {
+        const date = parse(dateString, dateFormat, TZDate.tz(this.resolveTimeZone(timeZone)));
         if (!isValid(date)) {
             throw new IllegalArgumentException('Invalid date string or date format');
         }
@@ -47,54 +74,52 @@ export class DateUtil {
     /**
      * Formats a Date or timestamp into a string.
      * @param date The date or timestamp to format.
-     * @param timeZone The IANA time zone identifier.
+     * @param timeZone The IANA time zone identifier (default: UTC).
      * @param dateFormat The desired output format (default: ISO_8601_FORMAT).
      * @returns Formatted date string.
      */
-    static printDate(date: Date, timeZone: string, dateFormat?: string): string;
-    static printDate(date: number, timeZone: string, dateFormat?: string): string;
-    static printDate(date: Date | number, timeZone: string, dateFormat: string = this.ISO_8601_FORMAT): string {
-        const normalizedDate = this.normalizeDate(date);
-        return format(new TZDate(normalizedDate, timeZone), dateFormat);
+    static printDate(date: Date, timeZone?: string, dateFormat?: string): string;
+    static printDate(date: number, timeZone?: string, dateFormat?: string): string;
+    static printDate(date: Date | number, timeZone?: string, dateFormat: string = this.ISO_8601_FORMAT): string {
+        return format(this.toTZDate(date, timeZone), dateFormat);
     }
 
     /**
      * Gets the start of the day for a given date or timestamp.
      * @param date The date or timestamp to calculate from.
-     * @param timeZone The IANA time zone identifier.
+     * @param timeZone The IANA time zone identifier (default: UTC).
      * @returns The start of the day as a Date object.
      */
-    static getStartOfDay(date: Date, timeZone: string): Date;
-    static getStartOfDay(date: number, timeZone: string): Date;
-    static getStartOfDay(date: Date | number, timeZone: string): Date {
-        const normalizedDate = this.normalizeDate(date);
-        return startOfDay(new TZDate(normalizedDate, timeZone));
+    static getStartOfDay(date: Date, timeZone?: string): Date;
+    static getStartOfDay(date: number, timeZone?: string): Date;
+    static getStartOfDay(date: Date | number, timeZone?: string): Date {
+        return startOfDay(this.toTZDate(date, timeZone));
     }
 
     /**
      * Gets the end of the day for a given date or timestamp.
      * @param date The date or timestamp to calculate from.
-     * @param timeZone The IANA time zone identifier.
+     * @param timeZone The IANA time zone identifier (default: UTC).
      * @returns The end of the day as a Date object.
      */
-    static getEndOfDay(date: Date, timeZone: string): Date;
-    static getEndOfDay(date: number, timeZone: string): Date;
-    static getEndOfDay(date: Date | number, timeZone: string): Date {
-        const normalizedDate = this.normalizeDate(date);
-        return endOfDay(new TZDate(normalizedDate, timeZone));
+    static getEndOfDay(date: Date, timeZone?: string): Date;
+    static getEndOfDay(date: number, timeZone?: string): Date;
+    static getEndOfDay(date: Date | number, timeZone?: string): Date {
+        return endOfDay(this.toTZDate(date, timeZone));
     }
 
     /**
      * Checks if a date string is valid according to the specified format.
      * @param dateString The date string to validate.
      * @param dateFormat Optional date format (default: ISO_8601_FORMAT).
+     * @param timeZone Optional IANA time zone identifier (default: UTC).
      * @returns True if the date is valid, false otherwise.
      */
-    static isValidDate(dateString: string, dateFormat?: string): boolean {
+    static isValidDate(dateString: string, dateFormat: string = this.ISO_8601_FORMAT, timeZone?: string): boolean {
         try {
-            DateUtil.readDate(dateString, dateFormat, "UTC");
+            this.readDate(dateString, dateFormat, timeZone);
             return true;
-        } catch (error) {
+        } catch {
             return false;
         }
     }
@@ -112,13 +137,10 @@ export class DateUtil {
     static daysInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
     static daysInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
     static daysInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
-        const first = this.normalizeDate(firstDate);
-        const second = this.normalizeDate(secondDate);
-        const effectiveTimeZone = timeZone || this.TIMEZONE;
         return Math.abs(
             differenceInCalendarDays(
-                new TZDate(first, effectiveTimeZone),
-                new TZDate(second, effectiveTimeZone),
+                this.toTZDate(firstDate, timeZone),
+                this.toTZDate(secondDate, timeZone),
             )
         );
     }
@@ -136,13 +158,10 @@ export class DateUtil {
     static monthsInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
     static monthsInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
     static monthsInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
-        const first = this.normalizeDate(firstDate);
-        const second = this.normalizeDate(secondDate);
-        const effectiveTimeZone = timeZone || this.TIMEZONE;
         return Math.abs(
             differenceInCalendarMonths(
-                new TZDate(first, effectiveTimeZone),
-                new TZDate(second, effectiveTimeZone),
+                this.toTZDate(firstDate, timeZone),
+                this.toTZDate(secondDate, timeZone),
             )
         );
     }
@@ -160,13 +179,10 @@ export class DateUtil {
     static yearsInBetween(firstDate: Date, secondDate: Date, timeZone?: string): number;
     static yearsInBetween(firstDate: number, secondDate: number, timeZone?: string): number;
     static yearsInBetween(firstDate: Date | number, secondDate: Date | number, timeZone?: string): number {
-        const first = this.normalizeDate(firstDate);
-        const second = this.normalizeDate(secondDate);
-        const effectiveTimeZone = timeZone || this.TIMEZONE;
         return Math.abs(
             differenceInCalendarYears(
-                new TZDate(first, effectiveTimeZone),
-                new TZDate(second, effectiveTimeZone),
+                this.toTZDate(firstDate, timeZone),
+                this.toTZDate(secondDate, timeZone),
             )
         );
     }
@@ -182,9 +198,7 @@ export class DateUtil {
     static hoursInBetween(firstDate: Date, secondDate: Date): number;
     static hoursInBetween(firstDate: number, secondDate: number): number;
     static hoursInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = this.normalizeDate(firstDate);
-        const second = this.normalizeDate(secondDate);
-        return Math.abs(differenceInHours(first, second));
+        return Math.abs(differenceInHours(this.normalizeDate(firstDate), this.normalizeDate(secondDate)));
     }
 
     /**
@@ -198,9 +212,7 @@ export class DateUtil {
     static secondsInBetween(firstDate: Date, secondDate: Date): number;
     static secondsInBetween(firstDate: number, secondDate: number): number;
     static secondsInBetween(firstDate: Date | number, secondDate: Date | number): number {
-        const first = this.normalizeDate(firstDate);
-        const second = this.normalizeDate(secondDate);
-        return Math.abs(differenceInSeconds(first, second));
+        return Math.abs(differenceInSeconds(this.normalizeDate(firstDate), this.normalizeDate(secondDate)));
     }
 
     /**
@@ -212,10 +224,7 @@ export class DateUtil {
     static compareDates(firstDate: Date, secondDate: Date): -1 | 0 | 1;
     static compareDates(firstDate: number, secondDate: number): -1 | 0 | 1;
     static compareDates(firstDate: Date | number, secondDate: Date | number): -1 | 0 | 1 {
-        const first = this.normalizeDate(firstDate);
-        const second = this.normalizeDate(secondDate);
-
-        return compareAsc(first, second) as -1 | 0 | 1;
+        return compareAsc(this.normalizeDate(firstDate), this.normalizeDate(secondDate)) as -1 | 0 | 1;
     }
 
     /**
@@ -231,9 +240,7 @@ export class DateUtil {
     static addDuration(date: Date, duration: Duration, timeZone?: string): Date;
     static addDuration(date: number, duration: Duration, timeZone?: string): Date;
     static addDuration(date: Date | number, duration: Duration, timeZone?: string): Date {
-        const normalizedDate = this.normalizeDate(date);
-        const effectiveTimeZone = timeZone || this.TIMEZONE;
-        return add(new TZDate(normalizedDate, effectiveTimeZone), duration);
+        return add(this.toTZDate(date, timeZone), duration);
     }
 
     /**
@@ -242,9 +249,8 @@ export class DateUtil {
      * @returns `true` if the year is a leap year, otherwise `false`.
      */
     static isLeapYear(year: number): boolean {
-        return isLeapYear(DateUtil.readDate(year.toString(), 'yyyy', "UTC"));
+        return isLeapYear(this.readDate(year.toString(), 'yyyy'));
     }
-
 
     /**
      * Converts a timestamp (in milliseconds) to a Date object.
@@ -253,10 +259,6 @@ export class DateUtil {
      */
     static fromMillis(milliseconds: number): Date {
         return new Date(milliseconds);
-    }
-
-    protected static normalizeDate(date: Date | number): Date {
-        return typeof date === 'number' ? this.fromMillis(date) : date;
     }
 
     /**
