@@ -24,10 +24,10 @@ import { IllegalArgumentException } from '../../exceptions';
 export class DateUtil {
 
     static readonly ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSxxx";
-    static readonly DEFAULT_TIMEZONE = 'UTC';
+    static readonly TIMEZONE: string = 'UTC';
 
     protected static resolveTimeZone(timeZone?: string): string {
-        return timeZone || this.DEFAULT_TIMEZONE;
+        return timeZone || this.TIMEZONE;
     }
 
     protected static normalizeDate(date: Date | number): Date {
