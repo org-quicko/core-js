@@ -17,6 +17,15 @@ describe("DateUtil", () => {
 			// Allowing a difference of up to 1 second due to execution time
 			expect(timeDifference).toBeLessThan(1000);
 		});
+
+		it("should default to UTC timezone when timezone is omitted", () => {
+			const now = DateUtil.now();
+			expect(now).toBeInstanceOf(Date);
+
+			const currentUtcTime = new Date();
+			const timeDifference = Math.abs(now.getTime() - currentUtcTime.getTime());
+			expect(timeDifference).toBeLessThan(1000);
+		});
 	});
 
 	describe("nowInMillis()", () => {
@@ -28,6 +37,13 @@ describe("DateUtil", () => {
 	});
 
 	describe("readDate()", () => {
+		it("should parse valid date strings with UTC when timezone is omitted", () => {
+			const dateString = "2024-12-16T14:16:29.793Z";
+			const date = DateUtil.readDate(dateString);
+			expect(date).toBeInstanceOf(Date);
+			expect(date.toISOString()).toBe("2024-12-16T14:16:29.793+00:00");
+		});
+
 		it("should parse valid date strings correctly", () => {
 			const dateString = "2024-12-16T14:16:29.793Z";
 			const date = DateUtil.readDate(dateString, undefined, TIMEZONE_UTC);
@@ -57,6 +73,12 @@ describe("DateUtil", () => {
 	});
 
 	describe("printDate()", () => {
+		it("should format date using UTC when timezone is omitted", () => {
+			const date = new Date("2023-10-05T04:50:30.000Z");
+			const formattedDate = DateUtil.printDate(date);
+			expect(formattedDate).toBe("2023-10-05T04:50:30.000+00:00");
+		});
+
 		it("should format date correctly using default format", () => {
 			const date = new Date("2023-10-05T04:50:30.000Z");
 			const formattedDate = DateUtil.printDate(date, TIMEZONE_UTC);
@@ -72,6 +94,12 @@ describe("DateUtil", () => {
 	});
 
 	describe("getStartOfDay()", () => {
+		it("should return start of the day in UTC when timezone is omitted", () => {
+			const date = new Date("2023-10-05T12:00:00.000Z");
+			const startOfDay = DateUtil.getStartOfDay(date);
+			expect(startOfDay.toISOString()).toBe("2023-10-05T00:00:00.000+00:00");
+		});
+
 		it("should return start of the day in UTC timezone", () => {
 			const date = new Date("2023-10-05T12:00:00.000Z");
 			const startOfDay = DateUtil.getStartOfDay(date, TIMEZONE_UTC);
@@ -80,6 +108,12 @@ describe("DateUtil", () => {
 	});
 
 	describe("getEndOfDay()", () => {
+		it("should return end of the day in UTC when timezone is omitted", () => {
+			const date = new Date("2023-10-05T12:00:00.000Z");
+			const endOfDay = DateUtil.getEndOfDay(date);
+			expect(endOfDay.toISOString()).toBe("2023-10-05T23:59:59.999+00:00");
+		});
+
 		it("should return end of the day in UTC timezone", () => {
 			const date = new Date("2023-10-05T12:00:00.000Z");
 			const endOfDay = DateUtil.getEndOfDay(date, TIMEZONE_UTC);
