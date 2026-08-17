@@ -1,6 +1,6 @@
 {
 	"name": "@org-quicko/core",
-	"version": "2.0.7",
+	"version": "2.1.0-alpha",
 	"description": "A library in typescript for common entities and utilities across Quicko",
 	"author": "Quicko",
 	"repository": {
@@ -24,9 +24,13 @@
 		"prebuild": "npm run clean && npm run lint",
 		"build": "rollup -c",
 		"test": "set NODE_ENV=local && node --experimental-vm-modules node_modules/jest/bin/jest.js",
-		"test:date:util": "set NODE_ENV=local && node --experimental-vm-modules node_modules/jest/bin/jest.js run ./tests/DateUtil.test.ts"
+		"test:date:util": "set NODE_ENV=local && node --experimental-vm-modules node_modules/jest/bin/jest.js run ./tests/DateUtil.test.ts",
+		"publish-snapshot": "npm publish --userconfig ~/npmrc/snapshot.npmrc --reg https://artifacts.quicko.company/repository/npm-snapshots/"
 	},
 	"license": "ISC",
+	"engines": {
+		"node": ">=18.0.0"
+	},
 	"files": [
 		"dist/**/*"
 	],
@@ -71,6 +75,13 @@
 			},
 			"default": "./dist/browser/utils/date/index.js"
 		},
+		"./cache": {
+			"types": "./dist/types/src/cache/index.d.ts",
+			"node": {
+				"import": "./dist/esm/cache/index.js",
+				"require": "./dist/cjs/cache/index.cjs"
+			}
+		},
 		"./logger": {
 			"types": "./dist/types/src/logger/index.d.ts",
 			"node": {
@@ -93,10 +104,13 @@
 	},
 	"dependencies": {
 		"@date-fns/tz": "^1.1.2",
+		"cache-manager": "6.4.3",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.1",
 		"date-fns": "^4.1.0",
+		"reflect-metadata": "^0.2.2",
 		"tslib": "^2.8.1",
+		"tsyringe": "^4.10.0",
 		"winston": "^3.17.0"
 	},
 	"devDependencies": {

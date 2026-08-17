@@ -17,6 +17,34 @@ npm run build
 npm run test
 ```
 
+## Node.js method cache
+
+The `@Cache()` decorator is available only in Node.js. Configure its TTL once during application bootstrap, then add the zero-argument decorator to asynchronous read methods:
+
+```typescript
+new CacheConfiguration({ ttl: 60_000 });
+
+class CustomerClient {
+	@Cache()
+	public async fetchCustomer(organizationId: string, customerId: string) {
+		// Fetch the customer.
+	}
+
+	@Cache({ ttl: 10_000 })
+	public async fetchRecentCustomers(organizationId: string) {
+		// This method overrides the globally configured TTL.
+	}
+}
+```
+
+Cache keys include the client instance, method, and complete argument list. Arguments use Node.js `v8.serialize()` and Base64URL encoding. Use data-only arguments whose relevant state is visible to V8 serialization, such as primitives, plain objects, arrays, `Date`, `Map`, `Set`, `BigInt`, and cyclic data graphs.
+
+Do not use custom class behavior, symbol-keyed properties, or non-enumerable properties to determine the result of a cached method. V8 does not include those details in its serialized representation. Unsupported values, such as functions, symbols, promises, `WeakMap`, and `WeakSet`, reject the call before the decorated method runs.
+
+Serialization is order-sensitive. Objects, maps, or sets built in a different insertion order can use different cache entries, even when their data is otherwise equal. This can cause an additional method call, but it does not merge those differently serialized entries.
+
+The generated keys are for a process-local cache. Do not persist them or share them across processes, deployments, or Node.js versions.
+
 ## Release Flow
 
 This repo uses GitHub Actions for:

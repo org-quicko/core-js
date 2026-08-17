@@ -8,7 +8,7 @@ import { nodeExternals } from "rollup-plugin-node-externals";
 const EXTENSIONS = [".js", ".ts"];
 
 const environmentConfig = {
-  nodeOnly: ["logger"],
+  nodeOnly: ["logger", "cache"],
   browserOnly: [],
 };
 
